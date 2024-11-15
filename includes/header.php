@@ -4,7 +4,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/DesainHub/config/config.php';
 <!-- Navbar -->
 <nav class="navbar sticky-top navbar-expand-lg bg-dark navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="<?php echo BASE_URL; ?>/index.php"><strong>Desain</strong>Hub <em>UMRI</em></a>
+        <a class="navbar-brand" href="<?php echo BASE_URL; ?>index.php"><strong>Desain</strong>Hub <em>UMRI</em></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
