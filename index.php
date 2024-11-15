@@ -15,7 +15,7 @@
 
     <!-- Banner -->
     <div class="container mt-md-4 banner d-flex justify-content-center align-items-center" style="height: 50vh;">
-        <div class="text-center col-lg-8">
+        <div class="text-center col-lg-9">
             <h4 class="ts-md-sm"><strong>Desain</strong>HUB UMRI</h4>
             <h1>Tingkatkan tim profesional Anda dengan bantuan <em>freelancers</em> dari mahasiswa UMRI!</h1>
             <div class="search-container mt-5 col-8">
