@@ -109,7 +109,7 @@
             <div class="cta-section position-absolute top-50 start-50 translate-middle text-center">
                 <h2>Siap Memulai?</h2>
                 <h4>Bergabung sekarang dan dapatkan layanan terbaik dari freelancer UMRI.</h4>
-                <a href="#" class="btn btn-success btn-lg mt-2">Daftar Sekarang</a>
+                <a href="pages/masuk.php" class="btn btn-success btn-lg mt-2">Daftar Sekarang</a>
             </div>
 
             <div class="carousel-indicators">

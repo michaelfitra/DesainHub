@@ -37,11 +37,12 @@
                 <!-- Profile Header -->
                 <div class="row align-items-center mb-4">
                     <div class="col-md-2 d-flex justify-content-center">
+                        <a href="public-profile.php">
                         <img src="../assets/Images/CoverImage.jpg" alt="User Photo" class="img-fluid rounded-circle"
-                            style="height: 100px; width: 100px;">
+                            style="height: 100px; width: 100px;"></a>
                     </div>
                     <div class="col-md-6">
-                        <h2>User Name</h2>
+                    <a href="public-profile.php" class="text-black text-decoration-none"><h2>User Name</h2></a>
                         <p class="text-muted">Professional Tagline (e.g., Graphic Designer, Web Developer)</p>
                         <div class="d-flex align-items-center">
                             <span class="text-warning">

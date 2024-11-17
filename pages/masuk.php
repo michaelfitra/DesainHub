@@ -37,7 +37,7 @@
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
                 <!-- Register Redirect -->
-                <p class="text-center mt-3">Don't have an account? <a href="daftar.html">Register here</a>.</p>
+                <p class="text-center mt-3">Don't have an account? <a href="daftar.php">Register here</a>.</p>
             </form>
         </div>
     </div>

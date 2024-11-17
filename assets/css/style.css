@@ -46,3 +46,19 @@
   border-radius: 8px;
   z-index: 10;
 }
+
+.dropdown-menu {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.list-group-item {
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
