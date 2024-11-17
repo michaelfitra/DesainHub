@@ -63,7 +63,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/DesainHub/config/config.php';
                                     <h6 class="mb-1">Another User</h6>
                                     <small class="text-muted">2 jam lalu</small>
                                 </div>
-                                <p class="mb-1">Pesan dari user lain</p>
+                                <p class="mb-1">Pesan dari user lain muncul di sini</p>
                             </a>
                             <!-- Tambahkan notifikasi lain di sini -->
                         </div>
@@ -90,7 +90,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/DesainHub/config/config.php';
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Daftar Sebagai Freelancher</a></li>
+                        <li><a class="dropdown-item" href="<?php echo ASSETS_PATH_PAGES; ?>daftar-freelance.php">Daftar Sebagai Freelancher</a></li>
                     </ul>
                 </li>
             </ul>
