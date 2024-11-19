@@ -11,11 +11,11 @@
 <body>
     <?php include '../includes/header.php'; ?> <!-- Header file -->
     
-    <div class="container mt-5">
+    <div class="container mt-4">
         <!-- Profile Section -->
         <div class="row">
             <div class="col-md-4 text-center">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm mb-3">
                     <div class="card-body">
                         <img src="https://via.placeholder.com/200" alt="Freelancer Photo" class="img-fluid rounded-circle mb-3">
                         <h3>Jane Doe</h3>

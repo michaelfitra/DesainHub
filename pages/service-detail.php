@@ -36,12 +36,12 @@
             <div class="col-lg-8">
                 <!-- Profile Header -->
                 <div class="row align-items-center mb-4">
-                    <div class="col-md-2 d-flex justify-content-center">
+                    <div class="col-sm-2 d-flex justify-content-center mx-auto mx-sm-0" style="width: 124px">
                         <a href="public-profile.php">
                         <img src="../assets/Images/CoverImage.jpg" alt="User Photo" class="img-fluid rounded-circle"
-                            style="height: 100px; width: 100px;"></a>
+                            style="height: 100px; width: auto;"></a>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-sm-6">
                     <a href="public-profile.php" class="text-black text-decoration-none"><h2>User Name</h2></a>
                         <p class="text-muted">Professional Tagline (e.g., Graphic Designer, Web Developer)</p>
                         <div class="d-flex align-items-center">
@@ -172,6 +172,8 @@
             </div>
         </div>
     </div>
+
+    <?php include '../includes/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>

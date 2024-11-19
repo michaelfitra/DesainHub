@@ -18,7 +18,7 @@
         <div class="row">
             <!-- Sidebar Section -->
             <div class="col-md-4">
-                <div class="card text-center shadow-sm">
+                <div class="card text-center shadow-sm mb-3">
                     <div class="card-body">
                         <img src="../assets/images/CoverImage.jpg" alt="Profile Image"
                             class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
@@ -27,7 +27,9 @@
                         <ul class="list-unstyled text-start">
                             <li><i class="bi bi-geo-alt me-1"></i> Located in Indonesia</li>
                             <li><i class="bi bi-calendar me-1"></i> Joined in November 2024</li>
+                            <li> <hr class="bg-danger border-2 border-top"> </li>
                             <li><i class="bi bi-globe me-1"></i> English (Native/Bilingual)</li>
+                            <li> <hr class="bg-danger border-2 border-top"> </li>
                             <li><i class="bi bi-clock me-1"></i> Preferred working hours: 9AM-5PM</li>
                         </ul>
                         <a href="public-profile.php" class="btn btn-outline-primary btn-sm w-100 mb-2">View Public
@@ -44,11 +46,11 @@
                     <strong>Welcome back, Mikel!</strong> Update your profile to attract freelancers.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <!-- <div class="alert alert-primary alert-dismissible fade show" role="alert">
                     <strong>This is your profile when ordering services.</strong> For your freelancer profile, click
                     <a href="freelancers-profile.php">here.</a>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                </div> -->
                 <!-- Profile Overview -->
                 <div class="card mb-4 shadow-sm">
                     <div class="card-body">

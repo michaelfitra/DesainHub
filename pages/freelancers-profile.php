@@ -97,7 +97,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <a href="create-gig.php" class="btn btn-outline-success">Create New Gig</a>
+                        <a href="add-offer.php" class="btn btn-outline-success">Create New Gig</a>
                     </div>
                 </div>
 

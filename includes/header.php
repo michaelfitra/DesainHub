@@ -91,6 +91,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/DesainHub/config/config.php';
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item" href="<?php echo ASSETS_PATH_PAGES; ?>daftar-freelance.php">Daftar Sebagai Freelancher</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="">Logout</a></li>
                     </ul>
                 </li>
             </ul>

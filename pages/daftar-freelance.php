@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Sebagai Freelancer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         .section-title {
             font-weight: bold;
@@ -13,6 +17,7 @@
             color: #2b6777;
             margin-bottom: 20px;
         }
+
         .added-item {
             background-color: #e7f3f5;
             padding: 5px 10px;
@@ -23,9 +28,11 @@
         }
     </style>
 </head>
+
 <body>
-    <div class="container my-5">
-        <h2 class="text-center mb-4">Register as a Freelancer</h2>
+    <?php include '../includes/header.php'; ?>
+    <div class="container my-4 col-md-6">
+        <h2 class="text-center mb-4">Daftar Sebagai Freelancer</h2>
 
         <form>
             <!-- Section 1: Personal Info -->
@@ -50,7 +57,8 @@
                 <label for="language" class="form-label">Languages</label>
                 <div id="languages-list" class="mb-2"></div>
                 <input type="text" class="form-control" id="language" placeholder="Enter a language">
-                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addLanguage()">Add Language</button>
+                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addLanguage()">Add
+                    Language</button>
             </div>
 
             <!-- Section 2: Professional Info -->
@@ -68,14 +76,17 @@
             <div class="mb-4">
                 <label for="education" class="form-label">Education</label>
                 <div id="education-list" class="mb-2"></div>
-                <input type="text" class="form-control" id="education" placeholder="e.g., Bachelor’s Degree in Graphic Design">
-                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addEducation()">Add Education</button>
+                <input type="text" class="form-control" id="education"
+                    placeholder="e.g., Bachelor’s Degree in Graphic Design">
+                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addEducation()">Add
+                    Education</button>
             </div>
             <div class="mb-4">
                 <label for="certifications" class="form-label">Certifications</label>
                 <div id="certifications-list" class="mb-2"></div>
                 <input type="text" class="form-control" id="certifications" placeholder="e.g., Certified Web Developer">
-                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addCertification()">Add Certification</button>
+                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addCertification()">Add
+                    Certification</button>
             </div>
             <div class="mb-4">
                 <label for="personalWebsite" class="form-label">Personal Website Link</label>
@@ -101,6 +112,8 @@
             </div>
         </form>
     </div>
+
+    <?php include '../includes/footer.php'; ?>
 
     <script>
         function addLanguage() {
@@ -158,4 +171,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
