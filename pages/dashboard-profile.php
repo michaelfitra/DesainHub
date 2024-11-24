@@ -20,7 +20,7 @@
             <div class="col-md-4">
                 <div class="card text-center shadow-sm mb-3">
                     <div class="card-body">
-                        <img src="../assets/images/CoverImage.jpg" alt="Profile Image"
+                        <img src="<?php echo ASSETS_PATH_IMG ?>profile\profile-pic.webp" alt="Profile Image"
                             class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
                         <h5 class="card-title">Mikel</h5>
                         <p class="text-muted">@kaellism4real</p>
