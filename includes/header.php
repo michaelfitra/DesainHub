@@ -80,7 +80,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/DesainHub/config/config.php';
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle p-0" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        <img src="<?php echo ASSETS_PATH_IMG ?>CoverImage.jpg" class="img-fluid ms-2"
+                        <img src="<?php echo ASSETS_PATH_IMG ?>profile/profile-pic.webp" class="img-fluid ms-2"
                             style="height: 30px;width: 30px;; border-radius: 50px;" alt="">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end mt-3">
