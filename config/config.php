@@ -13,6 +13,9 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
+// Mulai sesi
+session_start();
+
 // Menentukan path asset
 define('BASE_URL', 'http://localhost/desainhub/');
 define('ASSETS_PATH_IMG', BASE_URL . 'assets/images/');

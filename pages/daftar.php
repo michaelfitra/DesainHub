@@ -35,7 +35,7 @@ if (isset($_POST['register'])) {
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
             // Default profile photo
-            $profile_photo = "<?php echo ASSETS_PATH_IMG ?>profile/profile-pic.webp";
+            $profile_photo = ASSETS_PATH_IMG . "profile/profile-pic.webp";
 
             // Prepare and execute query
             $sql = "INSERT INTO users (full_name, email, username, password, profile_photo) VALUES (?, ?, ?, ?, ?)";

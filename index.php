@@ -17,12 +17,20 @@
     <div class="container mt-md-4 banner d-flex justify-content-center align-items-center" style="height: 50vh;">
         <div class="text-center col-lg-9">
             <h4 class="ts-md-sm"><strong>Desain</strong>HUB UMRI</h4>
-            <h1>Tingkatkan tim profesional Anda dengan bantuan <em>freelancers</em> dari mahasiswa UMRI!</h1>
-            <div class="search-container mt-5 col-8">
-                <input type="text" class="search-input" placeholder="Search for any service...">
-                <button class="search-button text-light">
-                    <i class="bi bi-search"></i>
-                </button>
+            <h1>Tingkatkan tim profesional Anda dengan bantuan talenta mahasiswa UMRI!</h1>
+            <div class="mt-5 offset-md-2 col-8">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Cari layanan yang Anda butuhkan...">
+                    <button class="search-button text-light">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                <div class="text-start mt-4">
+                    <span class="text-muted">Populer:</span>
+                    <a href="#" class="btn btn-sm btn-outline-secondary ms-2">Logo Design</a>
+                    <a href="#" class="btn btn-sm btn-outline-secondary ms-2">Web Development</a>
+                    <a href="#" class="btn btn-sm btn-outline-secondary ms-2">Content Writing</a>
+                </div>
             </div>
         </div>
     </div>
@@ -87,12 +95,12 @@
             <div class="col-md-4">
                 <i class="bi bi-shield-check text-success" style="font-size: 2rem;"></i>
                 <h5>Jaminan Kualitas</h5>
-                <p>Hanya freelancer berkualitas yang dapat bergabung dengan kami.</p>
+                <p>Setiap freelancer melalui proses kurasi ketat untuk menjamin kualitas layanan.</p>
             </div>
             <div class="col-md-4">
-                <i class="bi bi-people text-success" style="font-size: 2rem;"></i>
-                <h5>Freelancer Terpercaya</h5>
-                <p>Freelancer kami terpercaya dan memiliki portofolio yang beragam.</p>
+                <i class="bi bi-wallet2 text-success" style="font-size: 2rem;"></i>
+                <h5>Harga Terjangkau</h5>
+                <p>Dapatkan layanan berkualitas dengan harga yang sesuai budget Anda.</p>
             </div>
             <div class="col-md-4">
                 <i class="bi bi-search text-success" style="font-size: 2rem;"></i>
