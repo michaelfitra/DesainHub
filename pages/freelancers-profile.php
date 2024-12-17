@@ -18,7 +18,7 @@
         <h2 class="mb-4">Freelancer Dashboard</h2>
         <div class="row">
             <!-- Sidebar Section -->
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body text-center">
                         <img src="https://via.placeholder.com/150" alt="Freelancer Photo"
@@ -39,7 +39,7 @@
             </div>
 
             <!-- Main Content Section -->
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <!-- Overview -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
