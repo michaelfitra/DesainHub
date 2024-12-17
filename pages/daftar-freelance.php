@@ -127,6 +127,11 @@
                                     placeholder="Ceritakan sedikit tentang diri Anda" required></textarea>
                             </div>
                             <div class="mb-3">
+                                <label for="location" class="form-label">Lokasi</label>
+                                <input type="text" class="form-control" id="location" name="location"
+                                    placeholder="Contoh: Jakarta, Indonesia" required>
+                            </div>
+                            <div class="mb-3">
                                 <label for="languages" class="form-label">Bahasa</label>
                                 <div id="languages-list" class="mb-2"></div>
                                 <input type="text" class="form-control" id="languages"

@@ -17,7 +17,7 @@
     <div class="container mt-4">
         <div class="row">
             <!-- Sidebar Section -->
-            <div class="col-md-4">
+            <div class="col-sm-12 col-md-4 col-xl-3">
                 <div class="card text-center shadow-sm mb-3">
                     <div class="card-body">
                         <img src="<?php echo ASSETS_PATH_IMG ?>profile\profile-pic.webp" alt="Profile Image"
@@ -41,7 +41,7 @@
             </div>
 
             <!-- Main Content Section -->
-            <div class="col-md-8">
+            <div class="col-sm-12 col-md-8 col-xl-9">
                 <div class="alert alert-primary alert-dismissible fade show shadow-sm" role="alert">
                     <strong>Welcome back, Mikel!</strong> Update your profile to attract freelancers.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

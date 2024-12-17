@@ -1,3 +1,164 @@
+<?php
+// Pastikan buffer output diaktifkan di awal file
+ob_start();
+
+// Sertakan konfigurasi sebelum apa pun
+// require_once '../config/config.php';
+
+// Cegah multiple session_start()
+// if (session_status() == PHP_SESSION_NONE) {
+//     session_start();
+// }
+
+include '../includes/header.php';
+
+// Cek jika user sudah login
+if (!isset($_SESSION['user_id'])) {
+    header('Location: masuk.php');
+    exit;
+}
+
+// Fungsi untuk membersihkan input
+function sanitizeInput($input, $type = 'string') {
+    if ($input === null) return null;
+    
+    switch ($type) {
+        case 'email':
+            return filter_var($input, FILTER_VALIDATE_EMAIL);
+        case 'phone':
+            return preg_replace("/[^0-9+]/", "", $input);
+        case 'string':
+        default:
+            return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+    }
+}
+
+// Ambil data user dari database
+try {
+    $user_id = $_SESSION['user_id'];
+    $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        // Hapus sesi jika user tidak ditemukan
+        session_destroy();
+        header('Location: masuk.php');
+        exit;
+    }
+    
+    $user = $result->fetch_assoc();
+} catch (Exception $e) {
+    // Catat error
+    error_log("Kesalahan pengambilan data pengguna: " . $e->getMessage());
+    $_SESSION['error_message'] = "Terjadi kesalahan sistem. Silakan coba lagi.";
+}
+
+// Proses formulir
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    try {
+        // Update Profil
+        if (isset($_POST['update_profile'])) {
+            $full_name = sanitizeInput($_POST['full_name']) ?? $user['full_name'];
+            $username = sanitizeInput($_POST['username']) ?? $user['username'];
+            $location = sanitizeInput($_POST['location'] ?? '');
+            $description = sanitizeInput($_POST['description'] ?? '');
+            $language = in_array($_POST['language'], ['id', 'en']) ? $_POST['language'] : $user['language'];
+
+            // Periksa panjang username
+            if (strlen($username) < 3) {
+                throw new Exception("Username minimal 3 karakter!");
+            }
+
+            $stmt = $conn->prepare("UPDATE users SET full_name = ?, username = ?, description = ?, location = ?, language = ? WHERE id = ?");
+            $stmt->bind_param("sssssi", $full_name, $username, $description, $location, $language, $user_id);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Gagal memperbarui profil: " . $stmt->error);
+            }
+            
+            $_SESSION['success_message'] = "Profil berhasil diperbarui!";
+        }
+
+        // Update Kontak
+        if (isset($_POST['update_contact'])) {
+            $email = sanitizeInput($_POST['email'], 'email');
+            $phone = sanitizeInput($_POST['phone'], 'phone');
+
+            if (!$email) {
+                throw new Exception("Format email tidak valid!");
+            }
+
+            $stmt = $conn->prepare("UPDATE users SET email = ?, phone = ? WHERE id = ?");
+            $stmt->bind_param("ssi", $email, $phone, $user_id);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Gagal memperbarui informasi kontak: " . $stmt->error);
+            }
+            
+            $_SESSION['success_message'] = "Informasi kontak berhasil diperbarui!";
+        }
+
+        // Update Keamanan
+        if (isset($_POST['update_security'])) {
+            $current_password = $_POST['current_password'];
+            $new_password = $_POST['new_password'];
+            $confirm_password = $_POST['confirm_password'];
+
+            if (!password_verify($current_password, $user['password'])) {
+                throw new Exception("Password saat ini salah!");
+            }
+
+            if ($new_password !== $confirm_password) {
+                throw new Exception("Password baru tidak cocok!");
+            }
+
+            // Validasi kekuatan password
+            if (strlen($new_password) < 8) {
+                throw new Exception("Password minimal 8 karakter!");
+            }
+
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+            $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+            $stmt->bind_param("si", $hashed_password, $user_id);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Gagal memperbarui password: " . $stmt->error);
+            }
+            
+            $_SESSION['success_message'] = "Password berhasil diperbarui!";
+        }
+
+        // Update Notifikasi
+        if (isset($_POST['update_notifications'])) {
+            $email_notif = isset($_POST['emailNotif']) ? 1 : 0;
+            $project_notif = isset($_POST['projectNotif']) ? 1 : 0;
+            $message_notif = isset($_POST['messageNotif']) ? 1 : 0;
+
+            $stmt = $conn->prepare("UPDATE users SET email_notifications = ?, project_notifications = ?, message_notifications = ? WHERE id = ?");
+            $stmt->bind_param("iiii", $email_notif, $project_notif, $message_notif, $user_id);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Gagal menyimpan pengaturan notifikasi: " . $stmt->error);
+            }
+            
+            $_SESSION['success_message'] = "Pengaturan notifikasi berhasil disimpan!";
+        }
+
+        // Redirect untuk mencegah pengiriman ulang
+        header("Location: " . $_SERVER['PHP_SELF']);
+        ob_end_flush(); // Hapus buffer output
+        exit;
+
+    } catch (Exception $e) {
+        // Simpan pesan kesalahan di sesi
+        $_SESSION['error_message'] = $e->getMessage();
+        error_log("Kesalahan pembaruan profil: " . $e->getMessage());
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -42,27 +203,6 @@
             border-radius: 3px;
         }
 
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .section-highlight {
-            background-color: #e9ecef;
-            border-left: 4px solid #007bff;
-        }
-
-        #sidebar-details {
-            font-size: 0.9rem;
-        }
-
-        #sidebar-details hr {
-            margin: 10px 0;
-            border-top: 1px solid #dee2e6;
-        }
-
         .scroll-section {
             scroll-margin-top: 80px;
         }
@@ -70,40 +210,12 @@
 </head>
 
 <body data-bs-spy="scroll" data-bs-target="#profile-sidebar-nav">
-
-    <?php include '../includes/header.php'; ?>
-
     <div class="container mt-4">
         <div class="row">
-            <!-- Sidebar Profil -->
+            <!-- Sidebar Section -->
             <div class="col-md-3">
                 <div class="card profile-sidebar shadow-sm mb-4" id="profile-sidebar-nav">
                     <div class="card-body">
-                        <!-- <img src="https://via.placeholder.com/150" alt="Foto Profil" class="profile-img mb-3">
-                        <h5 class="card-title">Mikel</h5>
-                        <p class="text-muted">@kaellism4real</p>
-                        
-                        <div id="sidebar-details" class="text-start mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-geo-alt me-2 text-muted"></i>
-                                <span>Lokasi: Indonesia</span>
-                            </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-calendar me-2 text-muted"></i>
-                                <span>Bergabung: November 2024</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-globe me-2 text-muted"></i>
-                                <span>Bahasa: Inggris (Native/Bilingual)</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-clock me-2 text-muted"></i>
-                                <span>Jam Kerja Pilihan: 9 AM - 5 PM</span>
-                            </div>
-                        </div> -->
-
                         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
                             aria-orientation="vertical">
                             <a class="nav-link active" href="#profile-info" role="tab">Informasi Profil</a>
@@ -115,8 +227,28 @@
                 </div>
             </div>
 
-            <!-- Konten Utama Pengaturan -->
+            <!-- Main Content Section -->
             <div class="col-md-9">
+                <?php if (isset($_SESSION['success_message'])): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?php
+                        echo htmlspecialchars($_SESSION['success_message']);
+                        unset($_SESSION['success_message']);
+                        ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['error_message'])): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?php
+                        echo htmlspecialchars($_SESSION['error_message']);
+                        unset($_SESSION['error_message']);
+                        ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Informasi Profil -->
                 <section id="profile-info" class="scroll-section mb-4">
                     <div class="card shadow-sm">
@@ -124,37 +256,40 @@
                             <h5 class="card-title mb-0">Informasi Profil</h5>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form method="POST">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Nama Lengkap</label>
-                                        <input type="text" class="form-control" value="Mikel">
+                                        <input type="text" class="form-control" name="full_name"
+                                            value="<?php echo htmlspecialchars($user['full_name']); ?>">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Username</label>
-                                        <input type="text" class="form-control" value="kaellism4real">
+                                        <input type="text" class="form-control" name="username"
+                                            value="<?php echo htmlspecialchars($user['username']); ?>">
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Deskripsi Singkat</label>
-                                    <textarea class="form-control" rows="4"
-                                        placeholder="Tulis sedikit tentang dirimu"></textarea>
+                                    <textarea class="form-control" name="description"
+                                        rows="4"><?php echo htmlspecialchars($user['description'] ?? ''); ?></textarea>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Lokasi</label>
-                                        <input type="text" class="form-control" value="Indonesia">
+                                        <input type="text" class="form-control" name="location"
+                                            value="<?php echo htmlspecialchars($user['location'] ?? ''); ?>">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Bahasa</label>
-                                        <select class="form-select">
-                                            <option selected>Inggris (Native/Bilingual)</option>
-                                            <option>Indonesia</option>
-                                            <option>Mandarin</option>
+                                        <select class="form-select" name="language">
+                                            <option value="id" <?php echo ($user['language'] ?? '') === 'id' ? 'selected' : ''; ?>>Indonesia</option>
+                                            <option value="en" <?php echo ($user['language'] ?? '') === 'en' ? 'selected' : ''; ?>>English</option>
                                         </select>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                <button type="submit" name="update_profile" class="btn btn-primary">Simpan
+                                    Perubahan</button>
                             </form>
                         </div>
                     </div>
@@ -167,16 +302,20 @@
                             <h5 class="card-title mb-0">Informasi Kontak</h5>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form method="POST">
                                 <div class="mb-3">
                                     <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" value="mikel@example.com">
+                                    <input type="email" class="form-control" name="email"
+                                        value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Nomor Telepon</label>
-                                    <input type="tel" class="form-control" value="+62 812 3456 7890">
+                                    <input type="tel" class="form-control" name="phone"
+                                        value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>"
+                                        pattern="[+]?[0-9]{10,14}">
                                 </div>
-                                <button type="submit" class="btn btn-primary">Perbarui Kontak</button>
+                                <button type="submit" name="update_contact" class="btn btn-primary">Perbarui
+                                    Kontak</button>
                             </form>
                         </div>
                     </div>
@@ -189,20 +328,21 @@
                             <h5 class="card-title mb-0">Keamanan Akun</h5>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form method="POST">
                                 <div class="mb-3">
                                     <label class="form-label">Kata Sandi Saat Ini</label>
-                                    <input type="password" class="form-control">
+                                    <input type="password" class="form-control" name="current_password" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Kata Sandi Baru</label>
-                                    <input type="password" class="form-control">
+                                    <input type="password" class="form-control" name="new_password" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Konfirmasi Kata Sandi Baru</label>
-                                    <input type="password" class="form-control">
+                                    <input type="password" class="form-control" name="confirm_password" required>
                                 </div>
-                                <button type="submit" class="btn btn-danger">Ubah Kata Sandi</button>
+                                <button type="submit" name="update_security" class="btn btn-danger">Ubah Kata
+                                    Sandi</button>
                             </form>
                         </div>
                     </div>
@@ -215,25 +355,33 @@
                             <h5 class="card-title mb-0">Pengaturan Notifikasi</h5>
                         </div>
                         <div class="card-body">
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="emailNotif" checked>
-                                <label class="form-check-label" for="emailNotif">Notifikasi Email</label>
-                            </div>
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="projectNotif" checked>
-                                <label class="form-check-label" for="projectNotif">Notifikasi Proyek</label>
-                            </div>
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="messageNotif" checked>
-                                <label class="form-check-label" for="messageNotif">Notifikasi Pesan</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Simpan Preferensi</button>
+                            <form method="POST">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="emailNotif" name="emailNotif"
+                                        <?php echo ($user['email_notifications'] ?? 0) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="emailNotif">Notifikasi Email</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="projectNotif"
+                                        name="projectNotif" <?php echo ($user['project_notifications'] ?? 0) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="projectNotif">Notifikasi Proyek</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="messageNotif"
+                                        name="messageNotif" <?php echo ($user['message_notifications'] ?? 0) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="messageNotif">Notifikasi Pesan</label>
+                                </div>
+                                <button type="submit" name="update_notifications" class="btn btn-primary">Simpan
+                                    Preferensi</button>
+                            </form>
                         </div>
                     </div>
                 </section>
             </div>
         </div>
     </div>
+
+    <?php include '../includes/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>

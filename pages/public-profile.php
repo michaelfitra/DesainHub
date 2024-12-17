@@ -16,7 +16,7 @@
     <div class="container mt-4">
         <!-- Profile Section -->
         <div class="row">
-            <div class="col-md-4 text-center">
+            <div class="col-sm-12 col-md-4 col-xl-3 text-center">
                 <div class="card shadow-sm mb-3">
                     <div class="card-body">
                         <img src="https://via.placeholder.com/200" alt="Freelancer Photo"
@@ -33,7 +33,8 @@
                 </div>
             </div>
 
-            <div class="col-md-8">
+            <!-- Main Content Section -->
+            <div class="col-sm-12 col-md-8 col-xl-9">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h4>About Me</h4>
