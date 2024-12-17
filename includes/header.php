@@ -114,7 +114,7 @@ if ($isLoggedIn) {
                         <ul class="dropdown-menu dropdown-menu-end mt-3">
                             <li><a class="dropdown-item"
                                     href="<?php echo ASSETS_PATH_PAGES; ?>dashboard-profile.php">Profil</a></li>
-                            <li><a class="dropdown-item" href="#">Pengaturan</a></li>
+                            <li><a class="dropdown-item" href="<?php echo ASSETS_PATH_PAGES; ?>pengaturan.php">Pengaturan</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

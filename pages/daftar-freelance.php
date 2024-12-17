@@ -1,175 +1,307 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Sebagai Freelancer</title>
+    <title>Pendaftaran Freelancer Baru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
-        .section-title {
-            font-weight: bold;
-            font-size: 1.5rem;
-            margin-top: 20px;
-            color: #2b6777;
-            margin-bottom: 20px;
+        body {
+            background-color: #f4f5f7;
+        }
+
+        .step-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: #e9ecef;
+            transition: background-color 0.3s ease;
+        }
+
+        .step.active::before {
+            background-color: #007bff;
+        }
+
+        .step.completed::before {
+            background-color: #28a745;
+        }
+
+        .step-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            visibility: hidden;
+            position: absolute;
+            width: 100%;
+        }
+
+        .step-content.active {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #495057;
         }
 
         .added-item {
-            background-color: #e7f3f5;
+            background-color: #e9ecef;
             padding: 5px 10px;
             border-radius: 5px;
             display: inline-block;
             margin: 5px 5px 0 0;
-            color: #2b6777;
+            color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .step-indicator .step {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
 
 <body>
     <?php include '../includes/header.php'; ?>
-    <div class="container my-4 col-md-6">
-        <h2 class="text-center mb-4">Daftar Sebagai Freelancer</h2>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="step-container">
+                    <h2 class="text-center mb-4">Daftar Sebagai Freelancer</h2>
 
-        <form>
-            <!-- Section 1: Personal Info -->
-            <div class="section-title">1. Personal Info</div>
-            <div class="mb-4">
-                <label for="fullName" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="fullName" required>
-            </div>
-            <div class="mb-4">
-                <label for="displayName" class="form-label">Display Name</label>
-                <input type="text" class="form-control" id="displayName" required>
-            </div>
-            <div class="mb-4">
-                <label for="profilePhoto" class="form-label">Profile Photo</label>
-                <input type="file" class="form-control" id="profilePhoto" accept="image/*">
-            </div>
-            <div class="mb-4">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" rows="3" required></textarea>
-            </div>
-            <div class="mb-4">
-                <label for="language" class="form-label">Languages</label>
-                <div id="languages-list" class="mb-2"></div>
-                <input type="text" class="form-control" id="language" placeholder="Enter a language">
-                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addLanguage()">Add
-                    Language</button>
-            </div>
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">
+                            <i class="bi bi-person me-2"></i>Informasi Pribadi
+                        </div>
+                        <div class="step" data-step="2">
+                            <i class="bi bi-briefcase me-2"></i>Informasi Profesional
+                        </div>
+                        <div class="step" data-step="3">
+                            <i class="bi bi-shield-lock me-2"></i>Keamanan Akun
+                        </div>
+                    </div>
 
-            <!-- Section 2: Professional Info -->
-            <div class="section-title">2. Professional Info</div>
-            <div class="mb-4">
-                <label for="occupation" class="form-label">Occupation</label>
-                <input type="text" class="form-control" id="occupation" required>
-            </div>
-            <div class="mb-4">
-                <label for="skills" class="form-label">Skills</label>
-                <div id="skills-list" class="mb-2"></div>
-                <input type="text" class="form-control" id="skills" placeholder="Enter a skill">
-                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addSkill()">Add Skill</button>
-            </div>
-            <div class="mb-4">
-                <label for="education" class="form-label">Education</label>
-                <div id="education-list" class="mb-2"></div>
-                <input type="text" class="form-control" id="education"
-                    placeholder="e.g., Bachelor’s Degree in Graphic Design">
-                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addEducation()">Add
-                    Education</button>
-            </div>
-            <div class="mb-4">
-                <label for="certifications" class="form-label">Certifications</label>
-                <div id="certifications-list" class="mb-2"></div>
-                <input type="text" class="form-control" id="certifications" placeholder="e.g., Certified Web Developer">
-                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addCertification()">Add
-                    Certification</button>
-            </div>
-            <div class="mb-4">
-                <label for="personalWebsite" class="form-label">Personal Website Link</label>
-                <input type="url" class="form-control" id="personalWebsite" placeholder="http://example.com">
-            </div>
+                    <form id="freelancer-form" class="position-relative">
+                        <!-- Langkah 1: Informasi Pribadi -->
+                        <div id="step-1" class="step-content active">
+                            <div class="mb-3">
+                                <label for="profilePhoto" class="form-label">Foto Profil</label>
+                                <input type="file" class="form-control" id="profilePhoto" name="profilePhoto"
+                                    accept="image/*" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Deskripsi Singkat</label>
+                                <textarea class="form-control" id="description" name="description" rows="4"
+                                    placeholder="Ceritakan sedikit tentang diri Anda" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="languages" class="form-label">Bahasa</label>
+                                <div id="languages-list" class="mb-2"></div>
+                                <input type="text" class="form-control" id="languages"
+                                    placeholder="Masukkan bahasa yang Anda kuasai">
+                                <button type="button" class="btn btn-secondary btn-sm mt-2"
+                                    onclick="addItem('languages')">
+                                    <i class="bi bi-plus-circle me-2"></i>Tambah Bahasa
+                                </button>
+                            </div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary" onclick="changeStep(2)">
+                                    Lanjutkan <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
 
-            <!-- Section 3: Account Security -->
-            <div class="section-title">3. Account Security</div>
-            <div class="mb-4">
-                <label for="email" class="form-label">Email Verification</label>
-                <input type="email" class="form-control" id="email" placeholder="Your verified email address" required>
-                <button type="button" class="btn btn-secondary btn-sm mt-2">Verify Email</button>
-            </div>
-            <div class="mb-4">
-                <label for="phone" class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" id="phone" placeholder="+1234567890">
-                <button type="button" class="btn btn-secondary btn-sm mt-2">Add Phone Number</button>
-            </div>
+                        <!-- Langkah 2: Informasi Profesional -->
+                        <div id="step-2" class="step-content">
+                            <div class="mb-3">
+                                <label for="occupation" class="form-label">Pekerjaan/Keahlian Utama</label>
+                                <input type="text" class="form-control" id="occupation" name="occupation"
+                                    placeholder="Contoh: Desainer Grafis, Penulis Konten" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="skills" class="form-label">Keterampilan</label>
+                                <div id="skills-list" class="mb-2"></div>
+                                <input type="text" class="form-control" id="skills"
+                                    placeholder="Masukkan keterampilan Anda">
+                                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addItem('skills')">
+                                    <i class="bi bi-plus-circle me-2"></i>Tambah Keterampilan
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <label for="education" class="form-label">Pendidikan</label>
+                                <div id="education-list" class="mb-2"></div>
+                                <input type="text" class="form-control" id="education"
+                                    placeholder="Contoh: Sarjana Desain Grafis">
+                                <button type="button" class="btn btn-secondary btn-sm mt-2"
+                                    onclick="addItem('education')">
+                                    <i class="bi bi-plus-circle me-2"></i>Tambah Pendidikan
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <label for="certifications" class="form-label">Sertifikasi</label>
+                                <div id="certifications-list" class="mb-2"></div>
+                                <input type="text" class="form-control" id="certifications"
+                                    placeholder="Contoh: Sertifikat Desain">
+                                <button type="button" class="btn btn-secondary btn-sm mt-2"
+                                    onclick="addItem('certifications')">
+                                    <i class="bi bi-plus-circle me-2"></i>Tambah Sertifikasi
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" onclick="changeStep(1)">
+                                    <i class="bi bi-arrow-left me-2"></i>Kembali
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="changeStep(3)">
+                                    Lanjutkan <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
 
-            <!-- Submit Button -->
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary">Complete Registration</button>
+                        <!-- Langkah 3: Keamanan Akun -->
+                        <div id="step-3" class="step-content">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Masukkan email Anda" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Nomor Telepon</label>
+                                <input type="tel" class="form-control" id="phone" name="phone"
+                                    placeholder="Contoh: +62 812 3456 7890" required>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" onclick="changeStep(2)">
+                                    <i class="bi bi-arrow-left me-2"></i>Kembali
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle me-2"></i>Selesaikan Pendaftaran
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 
-    <?php include '../includes/footer.php'; ?>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function addLanguage() {
-            const languageInput = document.getElementById('language');
-            const languageValue = languageInput.value.trim();
-            if (languageValue) {
-                const languageList = document.getElementById('languages-list');
-                const languageItem = document.createElement('span');
-                languageItem.className = 'added-item';
-                languageItem.textContent = languageValue;
-                languageList.appendChild(languageItem);
-                languageInput.value = '';
-            }
+        function changeStep(targetStep) {
+            // Validasi form sebelum pindah
+            const currentStep = document.querySelector('.step-content.active');
+            const inputs = currentStep.querySelectorAll('input, select, textarea');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) return;
+
+            // Update step indicators
+            const stepIndicators = document.querySelectorAll('.step');
+            stepIndicators.forEach(indicator => {
+                indicator.classList.remove('active', 'completed');
+                if (parseInt(indicator.dataset.step) < targetStep) {
+                    indicator.classList.add('completed');
+                }
+                if (parseInt(indicator.dataset.step) === targetStep) {
+                    indicator.classList.add('active');
+                }
+            });
+
+            // Update step content
+            const stepContents = document.querySelectorAll('.step-content');
+            stepContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === `step-${targetStep}`) {
+                    content.classList.add('active');
+                }
+            });
         }
 
-        function addSkill() {
-            const skillInput = document.getElementById('skills');
-            const skillValue = skillInput.value.trim();
-            if (skillValue) {
-                const skillList = document.getElementById('skills-list');
-                const skillItem = document.createElement('span');
-                skillItem.className = 'added-item';
-                skillItem.textContent = skillValue;
-                skillList.appendChild(skillItem);
-                skillInput.value = '';
-            }
+        function addItem(type) {            
+            const input = document.getElementById(type);
+            const value = input.value.trim();
+            if (value) {
+                const list = document.getElementById(`${type}-list`);
+                const item = document.createElement('span');
+                item.className = 'added-item';
+                item.innerHTML = `${value} <i class="bi bi-x-circle ms-2" onclick="removeItem(this)"></i>`;
+                list.appendChild(item);            
+                input.value = ''; // Mengosongkan input setelah menambahkan item
+            } 
         }
 
-        function addEducation() {
-            const educationInput = document.getElementById('education');
-            const educationValue = educationInput.value.trim();
-            if (educationValue) {
-                const educationList = document.getElementById('education-list');
-                const educationItem = document.createElement('span');
-                educationItem.className = 'added-item';
-                educationItem.textContent = educationValue;
-                educationList.appendChild(educationItem);
-                educationInput.value = '';
-            }
+        function removeItem(closeBtn) {
+            closeBtn.parentElement.remove();
         }
 
-        function addCertification() {
-            const certificationInput = document.getElementById('certifications');
-            const certificationValue = certificationInput.value.trim();
-            if (certificationValue) {
-                const certificationList = document.getElementById('certifications-list');
-                const certificationItem = document.createElement('span');
-                certificationItem.className = 'added-item';
-                certificationItem.textContent = certificationValue;
-                certificationList.appendChild(certificationItem);
-                certificationInput.value = '';
-            }
-        }
+        document.getElementById('freelancer-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Validasi form sebelum menampilkan Sweet Alert
+            const inputs = document.querySelectorAll('#freelancer-form input, #freelancer-form textarea');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) return;
+
+            // Tampilkan Sweet Alert jika form valid
+            Swal.fire({
+                icon: 'success',
+                title: 'Pendaftaran Berhasil!',
+                text: 'Anda telah berhasil mendaftar sebagai freelancer.',
+                confirmButtonText: 'OK'
+            });
+        });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
