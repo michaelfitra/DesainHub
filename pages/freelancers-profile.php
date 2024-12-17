@@ -22,7 +22,8 @@
                 <div class="card shadow-sm">
                     <div class="card-body text-center">
                         <img src="https://via.placeholder.com/150" alt="Freelancer Photo"
-                            class="img-fluid rounded-circle mb-3">
+                            class="img-fluid rounded-circle mb-3"
+                            style="width: 200px; height: 200px; object-fit: cover;">
                         <h5>John Doe</h5>
                         <p class="text-muted">Web Developer</p>
                         <a href="profile-settings.php" class="btn btn-outline-primary btn-sm w-100">Edit Profile</a>
