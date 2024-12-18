@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 17, 2024 at 07:46 PM
+-- Generation Time: Dec 18, 2024 at 07:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -103,16 +103,22 @@ CREATE TABLE `users` (
   `language` varchar(10) DEFAULT 'id',
   `email_notifications` tinyint(1) DEFAULT 0,
   `project_notifications` tinyint(1) DEFAULT 0,
-  `message_notifications` tinyint(1) DEFAULT 0
+  `message_notifications` tinyint(1) DEFAULT 0,
+  `is_freelancer` tinyint(1) DEFAULT 0,
+  `occupation` varchar(255) DEFAULT NULL,
+  `languages` text DEFAULT NULL,
+  `skills` text DEFAULT NULL,
+  `education` text DEFAULT NULL,
+  `certifications` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `phone`, `password`, `profile_photo`, `description`, `created_at`, `location`, `language`, `email_notifications`, `project_notifications`, `message_notifications`) VALUES
-(19, 'admin', 'admin', 'admin@admin.co', NULL, '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', '', NULL, '2024-12-05 17:14:28', NULL, 'id', 0, 0, 0),
-(20, 'mikel acumalaka', 'mikel', 'mikel@deshub.co.id', '081234567890', '$2y$10$D2cQ5p8cPd5TD17wTKrpUu9Gj5EepHDZ3kKhdOwotyotwCJn.NIoq', 'http://localhost/desainhub/assets/images/image (2).jpeg', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#039;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', '2024-12-11 16:38:45', 'padang, indonesia', 'id', 1, 1, 1);
+INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `phone`, `password`, `profile_photo`, `description`, `created_at`, `location`, `language`, `email_notifications`, `project_notifications`, `message_notifications`, `is_freelancer`, `occupation`, `languages`, `skills`, `education`, `certifications`) VALUES
+(19, 'admin', 'admin', 'admin@admin.co', NULL, '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', '', NULL, '2024-12-05 17:14:28', NULL, 'id', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL),
+(20, 'mikel acumalaka', 'mikel', 'mikel@deshub.co.id', '081234567890', '$2y$10$D2cQ5p8cPd5TD17wTKrpUu9Gj5EepHDZ3kKhdOwotyotwCJn.NIoq', 'http://localhost/desainhub/assets/images/image (2).jpeg', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#039;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', '2024-12-11 16:38:45', 'padang, indonesia', 'id', 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
