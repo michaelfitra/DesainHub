@@ -26,7 +26,7 @@
                             style="width: 200px; height: 200px; object-fit: cover;">
                         <h5>John Doe</h5>
                         <p class="text-muted">Web Developer</p>
-                        <a href="profile-settings.php" class="btn btn-outline-primary btn-sm w-100">Edit Profile</a>
+                        <a href="pengaturan.php" class="btn btn-outline-primary btn-sm w-100">Edit Profile</a>
                     </div>
                 </div>
                 <div class="list-group mt-4">
@@ -34,7 +34,7 @@
                     <a href="freelancer-orders.php" class="list-group-item list-group-item-action">Manage Orders</a>
                     <a href="earnings.php" class="list-group-item list-group-item-action">Earnings</a>
                     <a href="withdrawals.php" class="list-group-item list-group-item-action">Withdrawals</a>
-                    <a href="profile-settings.php" class="list-group-item list-group-item-action">Settings</a>
+                    <a href="pengaturan.php" class="list-group-item list-group-item-action">Settings</a>
                 </div>
             </div>
 

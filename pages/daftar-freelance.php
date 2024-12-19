@@ -1,8 +1,6 @@
 <?php
 ob_start();
-// Mulai sesi dan masukkan file konfigurasi
-// session_start();
-// require_once '../config/config.php';
+
 include '../includes/header.php';
 
 // Fungsi untuk membersihkan input

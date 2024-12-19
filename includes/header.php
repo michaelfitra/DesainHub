@@ -5,13 +5,13 @@ require $_SERVER['DOCUMENT_ROOT'] . '/DesainHub/config/config.php';
 $isLoggedIn = isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 
 // Default profile photo
-$profilePhoto = ASSETS_PATH_IMG. "profile/profile-pic.webp";
+$profilePhoto = ASSETS_PATH_IMG . "profile/profile-pic.webp";
 
 // Jika user sudah login, ambil foto profil
 if ($isLoggedIn) {
     try {
         // Persiapkan statement untuk mengambil foto profil
-        $stmt = $conn->prepare("SELECT profile_photo FROM users WHERE id = ?");
+        $stmt = $conn->prepare("SELECT profile_photo, is_freelancer FROM users WHERE id = ?");
         $stmt->bind_param("i", $_SESSION['user_id']);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -94,14 +94,14 @@ if ($isLoggedIn) {
 
                     <!-- Favorit -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="<?php echo ASSETS_PATH_PAGES; ?>favorites.php">
                             <i class="bi bi-heart"></i>
                         </a>
                     </li>
 
                     <!-- Pesanan -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Pesanan</a>
+                        <a class="nav-link" href="<?php echo ASSETS_PATH_PAGES; ?>orders.php">Pesanan</a>
                     </li>
 
                     <!-- Profil Dropdown -->
@@ -114,12 +114,16 @@ if ($isLoggedIn) {
                         <ul class="dropdown-menu dropdown-menu-end mt-3">
                             <li><a class="dropdown-item"
                                     href="<?php echo ASSETS_PATH_PAGES; ?>dashboard-profile.php">Profil</a></li>
-                            <li><a class="dropdown-item" href="<?php echo ASSETS_PATH_PAGES; ?>pengaturan.php">Pengaturan</a></li>
+                            <li><a class="dropdown-item"
+                                    href="<?php echo ASSETS_PATH_PAGES; ?>pengaturan.php">Pengaturan</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="<?php echo ASSETS_PATH_PAGES; ?>daftar-freelance.php">Daftar
-                                    Sebagai Freelancer</a></li>
+                            <?php if ($user['is_freelancer'] == 0): ?>
+                                <li><a class="dropdown-item" href="<?php echo ASSETS_PATH_PAGES; ?>daftar-freelance.php">Daftar Sebagai Freelancer</a></li>
+                            <?php else: ?>    
+                                <li><a class="dropdown-item" href="<?php echo ASSETS_PATH_PAGES; ?>daftar-freelance.php">Dashboard Freelancer</a></li>
+                            <?php endif; ?>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
