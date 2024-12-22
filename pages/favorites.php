@@ -107,12 +107,12 @@ $favorites = $stmt->get_result();
         <!-- Page Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Favorite Services</h2>
-            <nav aria-label="breadcrumb">
+            <!-- <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                     <li class="breadcrumb-item active">Favorites</li>
                 </ol>
-            </nav>
+            </nav> -->
         </div>
 
         <!-- Filters and Sorting -->
