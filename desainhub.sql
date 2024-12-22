@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 18, 2024 at 07:45 PM
+-- Generation Time: Dec 22, 2024 at 06:52 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,6 +31,35 @@ CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `favorites`
+--
+
+CREATE TABLE `favorites` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `freelancer_reviews`
+--
+
+CREATE TABLE `freelancer_reviews` (
+  `id` int(11) NOT NULL,
+  `transaction_id` int(11) NOT NULL,
+  `freelancer_id` int(11) NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `rating` tinyint(4) NOT NULL CHECK (`rating` between 1 and 5),
+  `review_text` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -117,8 +146,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `phone`, `password`, `profile_photo`, `description`, `created_at`, `location`, `language`, `email_notifications`, `project_notifications`, `message_notifications`, `is_freelancer`, `occupation`, `languages`, `skills`, `education`, `certifications`) VALUES
-(19, 'admin', 'admin', 'admin@admin.co', NULL, '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', '', NULL, '2024-12-05 17:14:28', NULL, 'id', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL),
-(20, 'mikel acumalaka', 'mikel', 'mikel@deshub.co.id', '081234567890', '$2y$10$D2cQ5p8cPd5TD17wTKrpUu9Gj5EepHDZ3kKhdOwotyotwCJn.NIoq', 'http://localhost/desainhub/assets/images/image (2).jpeg', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#039;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', '2024-12-11 16:38:45', 'padang, indonesia', 'id', 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL);
+(19, 'admin', 'admin', 'admin@deshub.com', '08888888888', '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', 'http://localhost/desainhub/assets/images/profile/67631be74e2f2.jpg', 'test', '2024-12-05 17:14:28', 'test', 'en', 0, 0, 0, 1, 'test', 'test,indo', 'test,test2', 'sd,tk', 'test,test2'),
+(20, 'mikel acumalaka', 'mikel', 'mikel@deshub.co.id', '081231231234', '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', 'http://localhost/desainhub/assets/images/profile/67631ebfc0fc7.png', 'saya mikel', '2024-12-11 16:38:45', 'Pekanbaru', 'id', 1, 1, 1, 1, 'Mahasiswa', 'Indonesia,Ocu,Minang,Ingris,Arab', 'Photoshop,Html', 'Sarjana', 'Stupid Ass Award,N Pass'),
+(21, 'test', 'test', 'test@test', NULL, '$2y$10$RwYhNqtBhFukrLIm44cMeuXWFwat3uOdh8IMntUhIvfJQRi7s8NFq', 'http://localhost/desainhub/assets/images/profile/profile-pic.webp', NULL, '2024-12-19 19:41:41', NULL, 'id', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -129,6 +159,23 @@ INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `phone`, `password`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `favorites`
+--
+ALTER TABLE `favorites`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `service_id` (`service_id`);
+
+--
+-- Indexes for table `freelancer_reviews`
+--
+ALTER TABLE `freelancer_reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `transaction_id` (`transaction_id`),
+  ADD KEY `freelancer_id` (`freelancer_id`),
+  ADD KEY `client_id` (`client_id`);
 
 --
 -- Indexes for table `reviews`
@@ -173,6 +220,18 @@ ALTER TABLE `categories`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `favorites`
+--
+ALTER TABLE `favorites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `freelancer_reviews`
+--
+ALTER TABLE `freelancer_reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -194,11 +253,26 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `favorites`
+--
+ALTER TABLE `favorites`
+  ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`);
+
+--
+-- Constraints for table `freelancer_reviews`
+--
+ALTER TABLE `freelancer_reviews`
+  ADD CONSTRAINT `freelancer_reviews_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`),
+  ADD CONSTRAINT `freelancer_reviews_ibfk_2` FOREIGN KEY (`freelancer_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `freelancer_reviews_ibfk_3` FOREIGN KEY (`client_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `reviews`
