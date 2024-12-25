@@ -1,6 +1,5 @@
 <?php
 include '../includes/header.php'; // session_start() dan config.php sudah ada dalam header
-
 ?>
 
 <!DOCTYPE html>
@@ -17,20 +16,19 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
 </head>
 
 <body>
-    <div class="container mt-4" style="height: 80%">
+    <div class="container mt-4">
         <div class="row">
             <!-- Sidebar Section -->
             <?php
             // Fetch user data
-            $user_query = "SELECT 
-            u.*,
-            COUNT(DISTINCT t.id) as completed_projects,
-            COALESCE(AVG(r.rating), 0) as avg_rating
-            FROM users u
-            LEFT JOIN transactions t ON u.id = t.client_id AND t.status = 'completed'
-            LEFT JOIN reviews r ON t.id = r.transaction_id
-            WHERE u.id = ?
-            GROUP BY u.id";
+            $user_query = "SELECT u.*,
+                COUNT(DISTINCT t.id) as completed_projects,
+                COALESCE(AVG(r.rating), 0) as avg_rating
+                FROM users u
+                LEFT JOIN transactions t ON u.id = t.client_id AND t.status = 'completed'
+                LEFT JOIN reviews r ON t.id = r.transaction_id
+                WHERE u.id = ?
+                GROUP BY u.id";
 
             $stmt = $conn->prepare($user_query);
             $stmt->bind_param("i", $_SESSION['user_id']);
@@ -66,7 +64,7 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
                         <p class="text-muted">@<?php echo htmlspecialchars($user_data['username']); ?></p>
 
                         <!-- User Stats and Info -->
-                        <ul class="list-unstyled text-start">
+                        <ul class="list-unstyled text-start px-4">
 
                             <!-- Description -->
                             <?php if (!empty($user_data['description'])): ?>
@@ -156,13 +154,13 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
 
                 // Fetch user stats
                 $stats_query = "SELECT 
-                COUNT(DISTINCT t.id) as total_projects,
-                SUM(t.total_price) as total_spent,
-                AVG(r.rating) as avg_rating
-                FROM users u
-                LEFT JOIN transactions t ON u.id = t.client_id
-                LEFT JOIN reviews r ON t.id = r.transaction_id
-                WHERE u.id = ?";
+                    COUNT(DISTINCT t.id) as total_projects,
+                    SUM(t.total_price) as total_spent,
+                    AVG(r.rating) as avg_rating
+                    FROM users u
+                    LEFT JOIN transactions t ON u.id = t.client_id
+                    LEFT JOIN reviews r ON t.id = r.transaction_id
+                    WHERE u.id = ?";
 
                 $stmt = $conn->prepare($stats_query);
                 $stmt->bind_param("i", $user_id);
@@ -179,8 +177,10 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
 
                 <!-- Profile Overview -->
                 <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
+                    <div class="card-header">
                         <h5 class="card-title">Profile Overview</h5>
+                    </div>
+                    <div class="card-body">
                         <div class="row text-center">
                             <div class="col-md-4">
                                 <h4><?php echo number_format($stats_result['total_projects']); ?></h4>
@@ -200,16 +200,17 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
 
                 <!-- Active Orders -->
                 <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
+                    <div class="card-header">
                         <h5 class="card-title">Active Orders</h5>
+                    </div>
+                    <div class="card-body">
                         <?php
-                        $active_orders_query = "SELECT 
-                        t.*, s.title as service_title, u.username as freelancer_name
-                        FROM transactions t
-                        JOIN services s ON t.service_id = s.id
-                        JOIN users u ON t.freelancer_id = u.id
-                        WHERE t.client_id = ? AND t.status = 'in_progress'
-                        ORDER BY t.created_at DESC LIMIT 3";
+                        $active_orders_query = "SELECT t.*, s.title as service_title, u.username as freelancer_name
+                            FROM transactions t
+                            JOIN services s ON t.service_id = s.id
+                            JOIN users u ON t.freelancer_id = u.id
+                            WHERE t.client_id = ? AND t.status = 'in_progress'
+                            ORDER BY t.created_at DESC LIMIT 3";
 
                         $stmt = $conn->prepare($active_orders_query);
                         $stmt->bind_param("i", $user_id);
@@ -235,21 +236,22 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
                         <?php else: ?>
                             <p class="text-muted">No active orders at the moment.</p>
                         <?php endif; ?>
-                        <a href="orders.php" class="btn btn-outline-primary mt-3">View All Orders</a>
+                        <a href="orders.php" class="btn btn-outline-primary">View All Orders</a>
                     </div>
                 </div>
 
                 <!-- Recent Reviews -->
                 <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
+                    <div class="card-header">
                         <h5 class="card-title">Recent Reviews from Freelancers</h5>
+                    </div>
+                    <div class="card-body">
                         <?php
-                        $reviews_query = "SELECT 
-                        fr.*, u.username as freelancer_name, u.profile_photo
-                        FROM freelancer_reviews fr
-                        JOIN users u ON fr.freelancer_id = u.id
-                        WHERE fr.client_id = ?
-                        ORDER BY fr.created_at DESC LIMIT 3";
+                        $reviews_query = "SELECT fr.*, u.username as freelancer_name, u.profile_photo
+                            FROM freelancer_reviews fr
+                            JOIN users u ON fr.freelancer_id = u.id
+                            WHERE fr.client_id = ?
+                            ORDER BY fr.created_at DESC LIMIT 3";
 
                         $stmt = $conn->prepare($reviews_query);
                         $stmt->bind_param("i", $user_id);
@@ -277,23 +279,24 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
                                 </div>
                             <?php endwhile; ?>
                         <?php else: ?>
-                            <p class="text-muted">No reviews yet.</p>
+                            <p class="text-muted m-0">No reviews yet.</p>
                         <?php endif; ?>
                     </div>
                 </div>
 
                 <!-- Favorite Services -->
                 <div class="card shadow-sm">
-                    <div class="card-body">
+                    <div class="card-header">
                         <h5 class="card-title">Favorite Services</h5>
+                    </div>
+                    <div class="card-body">
                         <?php
-                        $favorites_query = "SELECT 
-                        s.*, u.username as freelancer_name
-                        FROM favorites f
-                        JOIN services s ON f.service_id = s.id
-                        JOIN users u ON s.user_id = u.id
-                        WHERE f.user_id = ?
-                        ORDER BY f.created_at DESC LIMIT 3";
+                        $favorites_query = "SELECT s.*, u.username as freelancer_name
+                            FROM favorites f
+                            JOIN services s ON f.service_id = s.id
+                            JOIN users u ON s.user_id = u.id
+                            WHERE f.user_id = ?
+                            ORDER BY f.created_at DESC LIMIT 3";
 
                         $stmt = $conn->prepare($favorites_query);
                         $stmt->bind_param("i", $user_id);
@@ -325,7 +328,7 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
                         <?php else: ?>
                             <p class="text-muted">No favorite services yet.</p>
                         <?php endif; ?>
-                        <a href="favorites.php" class="btn btn-outline-primary mt-3">View All Favorites</a>
+                        <a href="favorites.php" class="btn btn-outline-primary">View All Favorites</a>
                     </div>
                 </div>
             </div>
