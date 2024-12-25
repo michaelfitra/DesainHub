@@ -19,9 +19,11 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Fungsi untuk membersihkan input
-function sanitizeInput($input, $type = 'string') {
-    if ($input === null) return null;
-    
+function sanitizeInput($input, $type = 'string')
+{
+    if ($input === null)
+        return null;
+
     switch ($type) {
         case 'email':
             return filter_var($input, FILTER_VALIDATE_EMAIL);
@@ -40,14 +42,14 @@ try {
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     if ($result->num_rows === 0) {
         // Hapus sesi jika user tidak ditemukan
         session_destroy();
         header('Location: masuk.php');
         exit;
     }
-    
+
     $user = $result->fetch_assoc();
 } catch (Exception $e) {
     // Catat error
@@ -73,11 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $stmt = $conn->prepare("UPDATE users SET full_name = ?, username = ?, description = ?, location = ?, language = ? WHERE id = ?");
             $stmt->bind_param("sssssi", $full_name, $username, $description, $location, $language, $user_id);
-            
+
             if (!$stmt->execute()) {
                 throw new Exception("Gagal memperbarui profil: " . $stmt->error);
             }
-            
+
             $_SESSION['success_message'] = "Profil berhasil diperbarui!";
         }
 
@@ -92,11 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $stmt = $conn->prepare("UPDATE users SET email = ?, phone = ? WHERE id = ?");
             $stmt->bind_param("ssi", $email, $phone, $user_id);
-            
+
             if (!$stmt->execute()) {
                 throw new Exception("Gagal memperbarui informasi kontak: " . $stmt->error);
             }
-            
+
             $_SESSION['success_message'] = "Informasi kontak berhasil diperbarui!";
         }
 
@@ -122,11 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
             $stmt->bind_param("si", $hashed_password, $user_id);
-            
+
             if (!$stmt->execute()) {
                 throw new Exception("Gagal memperbarui password: " . $stmt->error);
             }
-            
+
             $_SESSION['success_message'] = "Password berhasil diperbarui!";
         }
 
@@ -138,11 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $stmt = $conn->prepare("UPDATE users SET email_notifications = ?, project_notifications = ?, message_notifications = ? WHERE id = ?");
             $stmt->bind_param("iiii", $email_notif, $project_notif, $message_notif, $user_id);
-            
+
             if (!$stmt->execute()) {
                 throw new Exception("Gagal menyimpan pengaturan notifikasi: " . $stmt->error);
             }
-            
+
             $_SESSION['success_message'] = "Pengaturan notifikasi berhasil disimpan!";
         }
 
@@ -385,57 +387,89 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Fungsi untuk mengatur highlight pada sidebar
         document.addEventListener('DOMContentLoaded', function () {
             const sidebarNav = document.getElementById('profile-sidebar-nav');
             const navLinks = sidebarNav.querySelectorAll('.nav-link');
             const sections = document.querySelectorAll('.scroll-section');
 
-            // Fungsi untuk mengatur active state pada sidebar
+            // Function to set active nav link
             function setActiveNavLink(sectionId) {
                 navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${sectionId}`) {
+                    const href = link.getAttribute('href');
+                    if (href === `#${sectionId}`) {
                         link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
                     }
                 });
             }
 
-            // Tambahkan event listener untuk navigasi sidebar
+            // Function to get current section
+            function getCurrentSection() {
+                let current = '';
+                let minDistance = Infinity;
+
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    // Calculate distance from top of viewport
+                    const distance = Math.abs(rect.top - 80); // 80px offset for header
+
+                    // Update current section if this one is closer to viewport top
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                return current;
+            }
+
+            // Handle scroll events with debounce
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                if (scrollTimeout) {
+                    window.cancelAnimationFrame(scrollTimeout);
+                }
+
+                scrollTimeout = window.requestAnimationFrame(() => {
+                    const current = getCurrentSection();
+                    if (current) {
+                        setActiveNavLink(current);
+                    }
+                });
+            });
+
+            // Handle click events
             navLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
                     e.preventDefault();
+
+                    // Remove active class from all links first
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    // Add active class to clicked link
+                    this.classList.add('active');
+
                     const targetId = this.getAttribute('href').substring(1);
                     const targetSection = document.getElementById(targetId);
 
-                    // Perbarui active state sidebar
-                    setActiveNavLink(targetId);
-
-                    // Scroll ke section yang dipilih
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                    // Smooth scroll to target
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 80,
+                        behavior: 'smooth'
                     });
                 });
             });
 
-            // Gunakan Intersection Observer untuk update sidebar
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Perbarui active state sidebar
-                        setActiveNavLink(entry.target.id);
-                    }
-                });
-            }, {
-                threshold: 0.3,
-                rootMargin: '-80px 0px 0px 0px'
-            });
-
-            // Amati semua section
-            sections.forEach(section => {
-                observer.observe(section);
-            });
+            // Set initial active state based on URL hash or first section
+            const hash = window.location.hash;
+            if (hash) {
+                setActiveNavLink(hash.substring(1));
+            } else {
+                const firstSection = sections[0];
+                if (firstSection) {
+                    setActiveNavLink(firstSection.getAttribute('id'));
+                }
+            }
         });
     </script>
 </body>
