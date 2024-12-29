@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 22, 2024 at 06:52 PM
+-- Generation Time: Dec 29, 2024 at 06:38 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -60,6 +60,37 @@ CREATE TABLE `freelancer_reviews` (
   `rating` tinyint(4) NOT NULL CHECK (`rating` between 1 and 5),
   `review_text` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `offers`
+--
+
+CREATE TABLE `offers` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `category` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `duration` int(11) NOT NULL,
+  `revisions` int(11) DEFAULT 0,
+  `thumbnail` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `offer_gallery`
+--
+
+CREATE TABLE `offer_gallery` (
+  `id` int(11) NOT NULL,
+  `offer_id` int(11) NOT NULL,
+  `image_path` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -148,7 +179,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `phone`, `password`, `profile_photo`, `description`, `created_at`, `location`, `language`, `email_notifications`, `project_notifications`, `message_notifications`, `is_freelancer`, `occupation`, `languages`, `skills`, `education`, `certifications`) VALUES
 (19, 'admin', 'admin', 'admin@deshub.com', '08888888888', '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', 'http://localhost/desainhub/assets/images/profile/67631be74e2f2.jpg', 'test', '2024-12-05 17:14:28', 'test', 'en', 0, 0, 0, 1, 'test', 'test,indo', 'test,test2', 'sd,tk', 'test,test2'),
 (20, 'mikel acumalaka', 'mikel', 'mikel@deshub.co.id', '081231231234', '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', 'http://localhost/desainhub/assets/images/profile/67631ebfc0fc7.png', 'saya mikel', '2024-12-11 16:38:45', 'Pekanbaru', 'id', 1, 1, 1, 1, 'Mahasiswa', 'Indonesia,Ocu,Minang,Ingris,Arab', 'Photoshop,Html', 'Sarjana', 'Stupid Ass Award,N Pass'),
-(21, 'test', 'test', 'test@test', NULL, '$2y$10$RwYhNqtBhFukrLIm44cMeuXWFwat3uOdh8IMntUhIvfJQRi7s8NFq', 'http://localhost/desainhub/assets/images/profile/profile-pic.webp', NULL, '2024-12-19 19:41:41', NULL, 'id', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL);
+(21, 'test', 'test', 'thisisit@test.com', '093383', '$2y$10$RwYhNqtBhFukrLIm44cMeuXWFwat3uOdh8IMntUhIvfJQRi7s8NFq', 'http://localhost/desainhub/assets/images/profile/67685de2bdc68.jpg', 'saya adalah akun test', '2024-12-19 19:41:41', 'Bangdik', 'id', 0, 0, 0, 1, 'Gedagedi', 'thai,bangke', 'makan,minum', 'SD,SMP,SMA', 'Skau,scolar'),
+(22, 'azril', 'azril', 'monkey@type.co', '34245', '$2y$10$8YMYgDYFAVkmM0nxbH9zEOuczFwFTEgAj25HNCjR3zoemHMeksjYy', 'http://localhost/desainhub/assets/images/profile/676860ae93ac5.png', 'yee', '2024-12-22 18:54:48', 'yes', 'id', 0, 0, 0, 1, 'reesr', 'yeee,yess', 'resrd,erser', 'resers,erser', 'serserdrs,resdrser');
 
 --
 -- Indexes for dumped tables
@@ -176,6 +208,20 @@ ALTER TABLE `freelancer_reviews`
   ADD KEY `transaction_id` (`transaction_id`),
   ADD KEY `freelancer_id` (`freelancer_id`),
   ADD KEY `client_id` (`client_id`);
+
+--
+-- Indexes for table `offers`
+--
+ALTER TABLE `offers`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `offer_gallery`
+--
+ALTER TABLE `offer_gallery`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `offer_id` (`offer_id`);
 
 --
 -- Indexes for table `reviews`
@@ -232,6 +278,18 @@ ALTER TABLE `freelancer_reviews`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `offers`
+--
+ALTER TABLE `offers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `offer_gallery`
+--
+ALTER TABLE `offer_gallery`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -253,7 +311,7 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Constraints for dumped tables
@@ -273,6 +331,18 @@ ALTER TABLE `freelancer_reviews`
   ADD CONSTRAINT `freelancer_reviews_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`),
   ADD CONSTRAINT `freelancer_reviews_ibfk_2` FOREIGN KEY (`freelancer_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `freelancer_reviews_ibfk_3` FOREIGN KEY (`client_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `offers`
+--
+ALTER TABLE `offers`
+  ADD CONSTRAINT `offers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `offer_gallery`
+--
+ALTER TABLE `offer_gallery`
+  ADD CONSTRAINT `offer_gallery_ibfk_1` FOREIGN KEY (`offer_id`) REFERENCES `offers` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `reviews`

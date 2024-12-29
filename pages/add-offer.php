@@ -1,3 +1,153 @@
+<?php
+ob_start();
+include '../includes/header.php'; // start session dan koneksi database sudah ada pada header
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    ob_end_clean();
+    header("Location: login.php");
+    exit;
+}
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+$uploadDir = '../assets/images/offers/';
+if (!file_exists($uploadDir)) {
+    if (!mkdir($uploadDir, 0777, true)) {
+        die('Gagal membuat direktori upload');
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        // Validate input
+        $title = trim($_POST['title']);
+        $category = trim($_POST['category']);
+        $description = trim($_POST['description']);
+        $price = floatval($_POST['price']);
+        $duration = intval($_POST['duration']);
+        $revisions = intval($_POST['revisions']);
+
+        // Validate required fields
+        if (empty($title) || empty($category) || empty($description) || $price <= 0 || $duration <= 0) {
+            throw new Exception('Semua field wajib diisi dengan benar');
+        }
+
+        // Process thumbnail
+        if (!isset($_FILES['thumbnail']) || $_FILES['thumbnail']['error'] !== UPLOAD_ERR_OK) {
+            throw new Exception('Gambar sampul wajib diunggah');
+        }
+
+        // Validate thumbnail
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
+
+        if (!in_array($_FILES['thumbnail']['type'], $allowedTypes)) {
+            throw new Exception('Format file tidak didukung. Gunakan JPG, PNG, atau GIF');
+        }
+
+        if ($_FILES['thumbnail']['size'] > $maxSize) {
+            throw new Exception('Ukuran file terlalu besar. Maksimal 5MB');
+        }
+
+        // Generate unique filename for thumbnail
+        $thumbnailName = uniqid() . '_' . basename($_FILES['thumbnail']['name']);
+        $thumbnailPath = $uploadDir . $thumbnailName;
+
+        if (!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $thumbnailPath)) {
+            throw new Exception('Gagal mengunggah gambar sampul');
+        }
+
+        // Insert offer data
+        $query = "INSERT INTO offers (user_id, title, category, description, price, duration, revisions, thumbnail) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception('Gagal mempersiapkan query: ' . $conn->error);
+        }
+
+        $thumbnailDb = 'assets/images/offers/' . $thumbnailName;
+        $stmt->bind_param(
+            "isssdiis",
+            $_SESSION['user_id'],
+            $title,
+            $category,
+            $description,
+            $price,
+            $duration,
+            $revisions,
+            $thumbnailDb
+        );
+
+        if (!$stmt->execute()) {
+            throw new Exception('Gagal menyimpan data penawaran: ' . $stmt->error);
+        }
+
+        $offerId = $conn->insert_id;
+
+        // Process gallery images if any
+        if (isset($_FILES['gallery']['name']) && is_array($_FILES['gallery']['name'])) {
+            $totalGallery = count($_FILES['gallery']['name']);
+            if ($totalGallery > 5) {
+                throw new Exception('Maksimal 5 gambar tambahan');
+            }
+
+            $galleryStmt = $conn->prepare("INSERT INTO offer_gallery (offer_id, image_path) VALUES (?, ?)");
+            if (!$galleryStmt) {
+                throw new Exception('Gagal mempersiapkan query gallery: ' . $conn->error);
+            }
+
+            for ($i = 0; $i < $totalGallery; $i++) {
+                if ($_FILES['gallery']['error'][$i] === UPLOAD_ERR_OK) {
+                    if (!in_array($_FILES['gallery']['type'][$i], $allowedTypes)) {
+                        continue;
+                    }
+
+                    if ($_FILES['gallery']['size'][$i] > $maxSize) {
+                        continue;
+                    }
+
+                    $galleryName = uniqid() . '_' . basename($_FILES['gallery']['name'][$i]);
+                    $galleryPath = $uploadDir . $galleryName;
+
+                    if (move_uploaded_file($_FILES['gallery']['tmp_name'][$i], $galleryPath)) {
+                        $galleryImagePath = 'assets/images/offers/' . $galleryName;
+                        $galleryStmt->bind_param("is", $offerId, $galleryImagePath);
+                        if (!$galleryStmt->execute()) {
+                            throw new Exception('Gagal menyimpan gambar gallery: ' . $galleryStmt->error);
+                        }
+                    }
+                }
+            }
+            $galleryStmt->close();
+        }
+
+        $stmt->close();
+
+        // Redirect dengan pesan sukses
+        $_SESSION['swal_message'] = [
+            'icon' => 'success',
+            'title' => 'Berhasil!',
+            'text' => 'Penawaran berhasil dibuat'
+        ];
+
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+
+    } catch (Exception $e) {
+        $_SESSION['swal_message'] = [
+            'icon' => 'error',
+            'title' => 'Oops...',
+            'text' => $e->getMessage()
+        ];
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -85,8 +235,31 @@
 </head>
 
 <body>
-    <?php include '../includes/header.php'; ?>
-
+    <?php
+    // Check for SweetAlert message
+    if (isset($_SESSION['swal_message'])){
+        $message = $_SESSION['swal_message'];
+        unset($_SESSION['swal_message']); // Clear the message
+        ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: '<?php echo $message['icon']; ?>',
+                    title: '<?php echo addslashes($message['title']); ?>',
+                    text: '<?php echo addslashes($message['text']); ?>',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                }).then(() => {
+                    <?php if ($message['icon'] === 'success'): ?>
+                        window.location.href = 'freelancers-profile.php';
+                    <?php endif; ?>
+                });
+            });
+        </script>
+        <?php
+    }
+    ?>
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -105,7 +278,8 @@
                         </div>
                     </div>
 
-                    <form id="offer-form" class="position-relative">
+                    <form id="offer-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>"
+                        enctype="multipart/form-data" class="position-relative">
                         <!-- Langkah 1: Informasi Dasar -->
                         <div id="step-1" class="step-content active">
                             <div class="mb-3">
@@ -182,7 +356,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="gallery" class="form-label">Galeri Tambahan (Opsional)</label>
-                                <input type="file" class="form-control" id="gallery" name="gallery" accept="image/*"
+                                <input type="file" class="form-control" id="gallery" name="gallery[]" accept="image/*"
                                     multiple>
                                 <small class="form-text text-muted">Maksimal 5 gambar tambahan</small>
                             </div>
@@ -202,15 +376,16 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function changeStep(targetStep) {
             // Validasi form sebelum pindah
             const currentStep = document.querySelector('.step-content.active');
-            const inputs = currentStep.querySelectorAll('input, select, textarea');
+            const inputs = currentStep.querySelectorAll('input:not([type="file"]), select, textarea');
             let isValid = true;
 
             inputs.forEach(input => {
-                if (!input.checkValidity()) {
+                if (input.required && !input.value.trim()) {
                     input.classList.add('is-invalid');
                     isValid = false;
                 } else {
@@ -218,7 +393,14 @@
                 }
             });
 
-            if (!isValid) return;
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Mohon lengkapi semua field yang wajib diisi'
+                });
+                return;
+            }
 
             // Update step indicators
             const stepIndicators = document.querySelectorAll('.step');
@@ -242,10 +424,88 @@
             });
         }
 
+        // Validasi file
+        const allowedTypes = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif'
+        ];
+
+        // Event listener untuk thumbnail
+        document.getElementById('thumbnail').addEventListener('change', function (e) {
+            if (this.files && this.files[0]) {
+                validateFile(this.files[0], 5, allowedTypes);
+            }
+        });
+
+        // Event listener untuk gallery
+        document.getElementById('gallery').addEventListener('change', function (e) {
+            if (this.files.length > 5) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Maksimal 5 gambar tambahan'
+                });
+                this.value = '';
+                return;
+            }
+
+            Array.from(this.files).forEach(file => {
+                if (!validateFile(file, 5, allowedTypes)) {
+                    this.value = '';
+                    return false;
+                }
+            });
+        });
+
+        // Fungsi validasi file
+        function validateFile(file, maxSizeMB, allowedTypes) {
+            const maxSize = maxSizeMB * 1024 * 1024; // Convert to bytes
+
+            if (!allowedTypes.includes(file.type.toLowerCase())) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Format file tidak didukung',
+                    text: 'Gunakan format JPG, PNG, atau GIF'
+                });
+                return false;
+            }
+
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File terlalu besar',
+                    text: `Maksimal ukuran file adalah ${maxSizeMB}MB`
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        // Form submission handling
         document.getElementById('offer-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            // Di sini Anda bisa menambahkan logika submit form
-            alert('Penawaran berhasil dibuat!');
+            e.preventDefault(); // Prevent default form submission
+
+            const submitButton = this.querySelector('button[type="submit"]');
+            const thumbnail = document.getElementById('thumbnail');
+
+            if (!thumbnail.files || !thumbnail.files[0]) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Gambar sampul wajib diunggah'
+                });
+                return;
+            }
+
+            // Disable submit button to prevent double submission
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+
+            // Submit the form
+            this.submit();
         });
     </script>
 </body>
