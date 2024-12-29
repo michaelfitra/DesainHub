@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 29, 2024 at 06:38 PM
+-- Generation Time: Dec 29, 2024 at 11:11 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,8 +30,21 @@ SET time_zone = "+00:00";
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `slug`, `description`) VALUES
+(1, 'Desain Grafis', 'desain-grafis', 'Layanan desain logo, brosur, kartu nama, dan lainnya'),
+(2, 'Pemrograman & Teknologi', 'pemrograman-teknologi', 'Layanan pembuatan website, aplikasi, dan sistem informasi'),
+(3, 'Penulisan & Penerjemahan', 'penulisan-penerjemahan', 'Layanan penulisan konten, artikel, dan proofreading'),
+(4, 'Pemasaran Digital', 'pemasaran-digital', 'Layanan digital marketing dan social media'),
+(5, 'Produksi Video', 'produksi-video', 'Layanan editing video dan animasi'),
+(6, 'Konsultasi', 'konsultasi', 'Layanan konsultasi profesional');
 
 -- --------------------------------------------------------
 
@@ -42,7 +55,7 @@ CREATE TABLE `categories` (
 CREATE TABLE `favorites` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `service_id` int(11) NOT NULL,
+  `offer_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -72,12 +85,12 @@ CREATE TABLE `offers` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `category` varchar(100) NOT NULL,
+  `category_id` int(11) NOT NULL,
   `description` text NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `duration` int(11) NOT NULL,
   `revisions` int(11) DEFAULT 0,
-  `thumbnail` varchar(255) NOT NULL,
+  `thumbnail` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -110,31 +123,12 @@ CREATE TABLE `reviews` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `services`
---
-
-CREATE TABLE `services` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `delivery_time` int(11) NOT NULL,
-  `revisions` int(11) DEFAULT 0,
-  `image` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `transactions`
 --
 
 CREATE TABLE `transactions` (
   `id` int(11) NOT NULL,
-  `service_id` int(11) NOT NULL,
+  `offer_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
   `freelancer_id` int(11) NOT NULL,
   `status` enum('pending','in_progress','completed','cancelled') DEFAULT 'pending',
@@ -190,7 +184,8 @@ INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `phone`, `password`
 -- Indexes for table `categories`
 --
 ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`);
 
 --
 -- Indexes for table `favorites`
@@ -198,7 +193,7 @@ ALTER TABLE `categories`
 ALTER TABLE `favorites`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
-  ADD KEY `service_id` (`service_id`);
+  ADD KEY `service_id` (`offer_id`);
 
 --
 -- Indexes for table `freelancer_reviews`
@@ -214,7 +209,8 @@ ALTER TABLE `freelancer_reviews`
 --
 ALTER TABLE `offers`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `category_id` (`category_id`);
 
 --
 -- Indexes for table `offer_gallery`
@@ -231,19 +227,11 @@ ALTER TABLE `reviews`
   ADD KEY `transaction_id` (`transaction_id`);
 
 --
--- Indexes for table `services`
---
-ALTER TABLE `services`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `category_id` (`category_id`);
-
---
 -- Indexes for table `transactions`
 --
 ALTER TABLE `transactions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `service_id` (`service_id`),
+  ADD KEY `service_id` (`offer_id`),
   ADD KEY `client_id` (`client_id`),
   ADD KEY `freelancer_id` (`freelancer_id`);
 
@@ -263,7 +251,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `favorites`
@@ -296,12 +284,6 @@ ALTER TABLE `reviews`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `services`
---
-ALTER TABLE `services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
@@ -322,7 +304,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `favorites`
   ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`);
+  ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`offer_id`) REFERENCES `offers` (`id`);
 
 --
 -- Constraints for table `freelancer_reviews`
@@ -336,7 +318,8 @@ ALTER TABLE `freelancer_reviews`
 -- Constraints for table `offers`
 --
 ALTER TABLE `offers`
-  ADD CONSTRAINT `offers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `offers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `offers_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);
 
 --
 -- Constraints for table `offer_gallery`
@@ -351,17 +334,10 @@ ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`);
 
 --
--- Constraints for table `services`
---
-ALTER TABLE `services`
-  ADD CONSTRAINT `services_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `services_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);
-
---
 -- Constraints for table `transactions`
 --
 ALTER TABLE `transactions`
-  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`),
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`offer_id`) REFERENCES `offers` (`id`),
   ADD CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `transactions_ibfk_3` FOREIGN KEY (`freelancer_id`) REFERENCES `users` (`id`);
 COMMIT;
