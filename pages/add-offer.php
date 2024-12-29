@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert offer data
-        $query = "INSERT INTO offers (user_id, title, category, description, price, duration, revisions, thumbnail) 
+        $query = "INSERT INTO offers (user_id, category_id, title, description, price, duration, revisions, thumbnail) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $conn->prepare($query);
@@ -70,10 +70,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $thumbnailDb = 'assets/images/offers/' . $thumbnailName;
         $stmt->bind_param(
-            "isssdiis",
+            "iissdiis",
             $_SESSION['user_id'],
+            $_POST['category_id'], // Changed from category to category_id
             $title,
-            $category,
             $description,
             $price,
             $duration,
@@ -289,14 +289,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div class="mb-3">
                                 <label for="category" class="form-label">Kategori Layanan</label>
-                                <select class="form-select" id="category" name="category" required>
+                                <select class="form-select" id="category" name="category_id" required>
                                     <option value="">Pilih Kategori</option>
-                                    <option value="Desain Grafis">Desain Grafis</option>
-                                    <option value="Penulisan">Penulisan & Penerjemahan</option>
-                                    <option value="Pemrograman">Pemrograman & Teknologi</option>
-                                    <option value="Marketing">Pemasaran Digital</option>
-                                    <option value="Video">Produksi Video</option>
-                                    <option value="Konsultasi">Konsultasi</option>
+                                    <?php
+                                    $cat_query = "SELECT id, name FROM categories ORDER BY name";
+                                    $cat_result = $conn->query($cat_query);
+                                    while ($category = $cat_result->fetch_assoc()):
+                                    ?>
+                                        <option value="<?php echo $category['id']; ?>">
+                                            <?php echo htmlspecialchars($category['name']); ?>
+                                        </option>
+                                    <?php endwhile; ?>
                                 </select>
                             </div>
                             <div class="mb-3">
