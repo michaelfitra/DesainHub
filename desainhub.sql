@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 29, 2024 at 11:11 PM
+-- Generation Time: Dec 30, 2024 at 01:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -84,8 +84,8 @@ CREATE TABLE `freelancer_reviews` (
 CREATE TABLE `offers` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
   `category_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
   `description` text NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `duration` int(11) NOT NULL,
@@ -93,6 +93,13 @@ CREATE TABLE `offers` (
   `thumbnail` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `offers`
+--
+
+INSERT INTO `offers` (`id`, `user_id`, `category_id`, `title`, `description`, `price`, `duration`, `revisions`, `thumbnail`, `created_at`) VALUES
+(1, 20, 6, 'test', 'test', 1000.00, 100, 3, 'assets/images/offers/6771ca732fddf_download.jpg', '2024-12-29 22:17:23');
 
 -- --------------------------------------------------------
 
@@ -105,6 +112,13 @@ CREATE TABLE `offer_gallery` (
   `offer_id` int(11) NOT NULL,
   `image_path` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `offer_gallery`
+--
+
+INSERT INTO `offer_gallery` (`id`, `offer_id`, `image_path`) VALUES
+(1, 1, 'assets/images/offers/6771ca7330ae9_redditERD.jpg');
 
 -- --------------------------------------------------------
 
@@ -173,8 +187,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `full_name`, `username`, `email`, `phone`, `password`, `profile_photo`, `description`, `created_at`, `location`, `language`, `email_notifications`, `project_notifications`, `message_notifications`, `is_freelancer`, `occupation`, `languages`, `skills`, `education`, `certifications`) VALUES
 (19, 'admin', 'admin', 'admin@deshub.com', '08888888888', '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', 'http://localhost/desainhub/assets/images/profile/67631be74e2f2.jpg', 'test', '2024-12-05 17:14:28', 'test', 'en', 0, 0, 0, 1, 'test', 'test,indo', 'test,test2', 'sd,tk', 'test,test2'),
 (20, 'mikel acumalaka', 'mikel', 'mikel@deshub.co.id', '081231231234', '$2y$10$ft5GwvcDS27LtgDn168LZeMoOu3mCI6K/xQ42p2.AbRC4JUawzyZ2', 'http://localhost/desainhub/assets/images/profile/67631ebfc0fc7.png', 'saya mikel', '2024-12-11 16:38:45', 'Pekanbaru', 'id', 1, 1, 1, 1, 'Mahasiswa', 'Indonesia,Ocu,Minang,Ingris,Arab', 'Photoshop,Html', 'Sarjana', 'Stupid Ass Award,N Pass'),
-(21, 'test', 'test', 'thisisit@test.com', '093383', '$2y$10$RwYhNqtBhFukrLIm44cMeuXWFwat3uOdh8IMntUhIvfJQRi7s8NFq', 'http://localhost/desainhub/assets/images/profile/67685de2bdc68.jpg', 'saya adalah akun test', '2024-12-19 19:41:41', 'Bangdik', 'id', 0, 0, 0, 1, 'Gedagedi', 'thai,bangke', 'makan,minum', 'SD,SMP,SMA', 'Skau,scolar'),
-(22, 'azril', 'azril', 'monkey@type.co', '34245', '$2y$10$8YMYgDYFAVkmM0nxbH9zEOuczFwFTEgAj25HNCjR3zoemHMeksjYy', 'http://localhost/desainhub/assets/images/profile/676860ae93ac5.png', 'yee', '2024-12-22 18:54:48', 'yes', 'id', 0, 0, 0, 1, 'reesr', 'yeee,yess', 'resrd,erser', 'resers,erser', 'serserdrs,resdrser');
+(21, 'test', 'test', 'thisisit@test.com', '093383', '$2y$10$RwYhNqtBhFukrLIm44cMeuXWFwat3uOdh8IMntUhIvfJQRi7s8NFq', 'http://localhost/desainhub/assets/images/profile/67685de2bdc68.jpg', 'saya adalah akun test', '2024-12-19 19:41:41', 'Bangdik', 'id', 0, 0, 0, 0, 'Gedagedi', 'thai,bangke', 'makan,minum', 'SD,SMP,SMA', 'Skau,scolar'),
+(22, 'azril', 'azril', 'monkey@type.co', '34245', '$2y$10$8YMYgDYFAVkmM0nxbH9zEOuczFwFTEgAj25HNCjR3zoemHMeksjYy', 'http://localhost/desainhub/assets/images/profile/676860ae93ac5.png', 'yee', '2024-12-22 18:54:48', 'yes', 'id', 0, 0, 0, 0, 'reesr', 'yeee,yess', 'resrd,erser', 'resers,erser', 'serserdrs,resdrser');
 
 --
 -- Indexes for dumped tables
@@ -269,13 +283,13 @@ ALTER TABLE `freelancer_reviews`
 -- AUTO_INCREMENT for table `offers`
 --
 ALTER TABLE `offers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `offer_gallery`
 --
 ALTER TABLE `offer_gallery`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `reviews`
