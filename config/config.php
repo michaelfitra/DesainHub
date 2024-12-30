@@ -13,11 +13,19 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Mulai sesi
-session_start();
+// Mulai sesi jika belum ada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Menentukan path asset
-define('BASE_URL', 'http://localhost/desainhub/');
-define('ASSETS_PATH_IMG', BASE_URL . 'assets/images/');
-define('ASSETS_PATH_PAGES', BASE_URL . 'pages/');
+// Define constants if not already defined
+if (!defined('BASE_URL')) {
+    define('BASE_URL', 'http://localhost/desainhub/');
+}
+if (!defined('ASSETS_PATH_IMG')) {
+    define('ASSETS_PATH_IMG', BASE_URL . 'assets/images/');
+}
+if (!defined('ASSETS_PATH_PAGES')) {
+    define('ASSETS_PATH_PAGES', BASE_URL . 'pages/');
+}
 ?>

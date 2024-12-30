@@ -1,3 +1,8 @@
+<?php 
+include 'includes/header.php'; 
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,12 +11,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
     <title>DesainHub UMRI</title>
 </head>
 
 <body>
-    <?php include 'includes/header.php'; ?>
 
     <!-- Banner -->
     <div class="container mt-md-4 banner d-flex justify-content-center align-items-center" style="height: 50vh;">
@@ -181,26 +185,23 @@
     <div class="container my-4">
         <div class="row">
             <!-- Pengguna Terbaru Section -->
-            <div class="col-xl-6">
+            <div class="col">
                 <h2 class="mb-4">Jasa Terbaru</h2>
                 <div class="row">
-                    <!-- Example of a card for a new user -->
-                    <div class="col-md-6 mb-4">
-                        <?php include 'includes/card.php'; ?>
-                    </div>
+                    <?php 
+                    $isIndex = true; // Add this flag for proper path handling
+                    include 'includes/card.php'; 
+                    ?>
                 </div>
             </div>
 
             <!-- Freelancer Terpopuler Section -->
-            <div class="col-xl-6">
+            <!-- <div class="col-xl-6">
                 <h2 class="mb-4">Jasa Terpopuler</h2>
                 <div class="row">
-                    <!-- Example of a card for a popular freelancer -->
-                    <div class="col-md-6 mb-4">
-                        <?php include 'includes/card.php'; ?>
-                    </div>
+                    include 'includes/card.php'; 
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 

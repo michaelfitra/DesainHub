@@ -83,34 +83,36 @@ $offers = $stmt->get_result();
             <?php if ($offers->num_rows > 0): ?>
                 <?php while ($offer = $offers->fetch_assoc()): ?>
                     <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                        <div class="card h-100 border-0 shadow">
-                            <img src="../<?php echo htmlspecialchars($offer['thumbnail']); ?>" 
-                                 class="card-img-top card-img-bottom" alt="<?php echo htmlspecialchars($offer['title']); ?>" 
-                                 style="height: 200px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($offer['title']); ?></h5>
-                                <p class="card-text"><?php echo htmlspecialchars(substr($offer['description'], 0, 100)) . '...'; ?></p>
-                                
-                                <!-- Rating -->
-                                <div class="mb-2">
-                                    <span class="text-warning">
-                                        <?php for($i = 1; $i <= 5; $i++): ?>
-                                            <i class="bi bi-star<?php echo $i <= round($offer['avg_rating']) ? '-fill' : ''; ?>"></i>
-                                        <?php endfor; ?>
-                                    </span>
-                                    <small class="text-muted">(<?php echo $offer['total_orders']; ?> orders)</small>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="user-info">
-                                        <img src="<?php echo htmlspecialchars($offer['profile_photo']); ?>" 
-                                             class="rounded-circle" width="30" height="30">
-                                        <small class="ms-2"><?php echo htmlspecialchars($offer['freelancer_name']); ?></small>
+                        <a href="offers-detail.php?offer_id=<?php echo $offer['id']; ?>" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow offer-card">
+                                <img src="../<?php echo htmlspecialchars($offer['thumbnail']); ?>" 
+                                     class="card-img-top" alt="<?php echo htmlspecialchars($offer['title']); ?>" 
+                                     style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title text-dark"><?php echo htmlspecialchars($offer['title']); ?></h5>
+                                    <p class="card-text text-muted"><?php echo htmlspecialchars(substr($offer['description'], 0, 100)) . '...'; ?></p>
+                                    
+                                    <!-- Rating -->
+                                    <div class="mb-2">
+                                        <span class="text-warning">
+                                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                                <i class="bi bi-star<?php echo $i <= round($offer['avg_rating']) ? '-fill' : ''; ?>"></i>
+                                            <?php endfor; ?>
+                                        </span>
+                                        <small class="text-muted">(<?php echo $offer['total_orders']; ?> orders)</small>
                                     </div>
-                                    <strong class="text-primary">Rp <?php echo number_format($offer['price'], 0, ',', '.'); ?></strong>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="user-info">
+                                            <img src="<?php echo htmlspecialchars($offer['profile_photo']); ?>" 
+                                                 class="rounded-circle" width="30" height="30">
+                                            <small class="ms-2 text-dark"><?php echo htmlspecialchars($offer['freelancer_name']); ?></small>
+                                        </div>
+                                        <strong class="text-primary">Rp <?php echo number_format($offer['price'], 0, ',', '.'); ?></strong>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 <?php endwhile; ?>
             <?php else: ?>
