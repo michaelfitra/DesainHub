@@ -222,12 +222,15 @@ if (!$result || !$result['is_freelancer']) {
                     </div>
                     <div class="card-body">
                         <?php
-                        $offers_query = "SELECT s.*, c.name as category_name,
+                        // Improved query to include thumbnail
+                        $offers_query = "SELECT s.*, 
+                            s.thumbnail as image,
+                            c.name as category_name,
                             COUNT(DISTINCT t.id) as order_count,
                             COALESCE(AVG(r.rating), 0) as avg_rating
-                            FROM services s
-                            LEFT JOIN categories c ON s.category_id = c.id
-                            LEFT JOIN transactions t ON s.id = t.service_id
+                            FROM offers s
+                            LEFT JOIN categories c ON s.category_id = c.id 
+                            LEFT JOIN transactions t ON s.id = t.offer_id
                             LEFT JOIN reviews r ON t.id = r.transaction_id
                             WHERE s.user_id = ?
                             GROUP BY s.id
@@ -239,12 +242,12 @@ if (!$result || !$result['is_freelancer']) {
                         $offers = $stmt->get_result();
                         ?>
 
-                        <?php if ($offers->num_rows > 0): ?>
+                        <?php if ($offers && $offers->num_rows > 0): ?>
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle">
                                     <thead>
                                         <tr>
-                                            <th>Offer</th>
+                                            <th>Offers</th>
                                             <th>Category</th>
                                             <th>Price</th>
                                             <th>Orders</th>
@@ -257,19 +260,19 @@ if (!$result || !$result['is_freelancer']) {
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <img src="<?= htmlspecialchars($offer['image']) ?>" class="rounded me-2"
-                                                            style="width: 40px; height: 40px; object-fit: cover;">
+                                                        <img src="../<?= htmlspecialchars($offer['image'] ?? 'default-offer.jpg') ?>" 
+                                                             class="rounded me-2"
+                                                             style="width: 40px; height: 40px; object-fit: cover;">
                                                         <div><?= htmlspecialchars($offer['title']) ?></div>
                                                     </div>
                                                 </td>
                                                 <td><?= htmlspecialchars($offer['category_name']) ?></td>
-                                                <td>$<?= number_format($offer['price'], 2) ?></td>
+                                                <td>Rp <?= number_format($offer['price'], 0, ',', '.') ?></td>
                                                 <td><?= $offer['order_count'] ?></td>
-                                                <td><?= $offer['avg_rating'] > 0 ? number_format($offer['avg_rating'], 1) . ' ⭐' : 'No ratings' ?>
-                                                </td>
+                                                <td><?= $offer['avg_rating'] > 0 ? number_format($offer['avg_rating'], 1) . ' ⭐' : 'No ratings' ?></td>
                                                 <td>
-                                                    <a href="edit-offer.php?id=<?= $offer['id'] ?>"
-                                                        class="btn btn-sm btn-outline-primary">Edit</a>
+                                                    <a href="edit-offer.php?id=<?= $offer['id'] ?>" 
+                                                       class="btn btn-sm btn-outline-primary">Edit</a>
                                                 </td>
                                             </tr>
                                         <?php endwhile; ?>
@@ -277,7 +280,7 @@ if (!$result || !$result['is_freelancer']) {
                                 </table>
                             </div>
                         <?php else: ?>
-                            <p class="text-muted m-0">No active Offers at the moment.</p>
+                            <div class="alert alert-info">No offers found.</div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -292,7 +295,7 @@ if (!$result || !$result['is_freelancer']) {
                         $orders_query = "SELECT t.*, s.title as service_title, 
                             u.full_name as client_name, u.profile_photo as client_photo
                             FROM transactions t
-                            JOIN services s ON t.service_id = s.id
+                            JOIN offers s ON t.offer_id = s.id
                             JOIN users u ON t.client_id = u.id
                             WHERE t.freelancer_id = ? AND t.status = 'in_progress'
                             ORDER BY t.created_at DESC";
@@ -351,11 +354,11 @@ if (!$result || !$result['is_freelancer']) {
                     </div>
                     <div class="card-body">
                         <?php
-                        $reviews_query = "SELECT fr.*, t.service_id, s.title as service_title,
+                        $reviews_query = "SELECT fr.*, t.offer_id, s.title as service_title,
                             u.full_name as client_name, u.profile_photo as client_photo
                             FROM freelancer_reviews fr
                             JOIN transactions t ON fr.transaction_id = t.id
-                            JOIN services s ON t.service_id = s.id
+                            JOIN offers s ON t.offer_id = s.id
                             JOIN users u ON fr.client_id = u.id
                             WHERE fr.freelancer_id = ?
                             ORDER BY fr.created_at DESC

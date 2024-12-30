@@ -16,13 +16,13 @@ $base_query = "SELECT
     t.*, 
     s.title as service_title, 
     s.price,
-    s.delivery_time,
+    s.duration as delivery_time,
     u.username as freelancer_name,
     u.profile_photo as freelancer_photo,
     COALESCE(r.rating, 0) as rating,
     r.review_text
 FROM transactions t
-JOIN services s ON t.service_id = s.id
+JOIN offers s ON t.offer_id = s.id
 JOIN users u ON t.freelancer_id = u.id
 LEFT JOIN reviews r ON t.id = r.transaction_id
 WHERE t.client_id = ?";

@@ -10,7 +10,7 @@ $offset = ($page - 1) * $per_page;
 
 // Base query for counting total records
 $count_query = "SELECT COUNT(*) as total FROM favorites f 
-                JOIN services s ON f.service_id = s.id 
+                JOIN offers s ON f.offer_id = s.id 
                 WHERE f.user_id = ?";
 
 // Base query for fetching favorites
@@ -24,7 +24,7 @@ $base_query = "SELECT
     COALESCE(AVG(r.rating), 0) as avg_rating,
     COUNT(DISTINCT r.id) as review_count
 FROM favorites f
-JOIN services s ON f.service_id = s.id
+JOIN offers s ON f.offer_id = s.id
 JOIN users u ON s.user_id = u.id
 JOIN categories c ON s.category_id = c.id
 LEFT JOIN reviews r ON s.id = r.transaction_id
@@ -71,8 +71,8 @@ $total_pages = ceil($total_records / $per_page);
 
 // Fetch categories for filter dropdown
 $categories_query = "SELECT DISTINCT c.* FROM categories c 
-                    JOIN services s ON c.id = s.category_id 
-                    JOIN favorites f ON s.id = f.service_id 
+                    JOIN offers s ON c.id = s.category_id 
+                    JOIN favorites f ON s.id = f.offer_id 
                     WHERE f.user_id = ?";
 $stmt = $conn->prepare($categories_query);
 $stmt->bind_param("i", $_SESSION['user_id']);
@@ -161,7 +161,7 @@ $favorites = $stmt->get_result();
 
                             <!-- Favorite Button -->
                             <button class="btn btn-light position-absolute top-0 end-0 m-2 rounded-circle p-2 favorite-btn"
-                                data-service-id="<?php echo $favorite['service_id']; ?>">
+                                data-service-id="<?php echo $favorite['offer_id']; ?>">
                                 <i class="bi bi-heart-fill text-danger"></i>
                             </button>
 
@@ -267,7 +267,7 @@ $favorites = $stmt->get_result();
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            service_id: serviceId
+                            service_id: serviceId // service_id is the offer_id
                         })
                     })
                         .then(response => response.json())

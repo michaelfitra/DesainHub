@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // Validate input
         $title = trim($_POST['title']);
-        $category = trim($_POST['category']);
+        $category = trim($_POST['category_id']);
         $description = trim($_POST['description']);
         $price = floatval($_POST['price']);
         $duration = intval($_POST['duration']);

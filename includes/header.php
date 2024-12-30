@@ -143,7 +143,7 @@ if ($isLoggedIn) {
                         <a class="nav-link" href="<?php echo ASSETS_PATH_PAGES; ?>daftar.php">Daftar</a>
                     </li>
                 </ul>
-                <form class="d-flex ms-lg-3" role="search">
+                <form class="d-flex ms-lg-3 mb-0" role="search">
                     <a href="<?php echo ASSETS_PATH_PAGES; ?>masuk.php" class="btn btn-outline-success"
                         type="submit">Masuk</a>
                 </form>

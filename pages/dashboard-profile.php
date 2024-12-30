@@ -130,7 +130,7 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
                                 View Public Profile
                             </a>
                             <?php if ($user_data['is_freelancer'] == 0): ?>
-                                <a href="become-freelancer.php" class="btn btn-primary btn-sm">
+                                <a href="daftar-freelance.php" class="btn btn-primary btn-sm">
                                     Become a Freelancer
                                 </a>
                             <?php else: ?>
@@ -207,7 +207,7 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
                         <?php
                         $active_orders_query = "SELECT t.*, s.title as service_title, u.username as freelancer_name
                             FROM transactions t
-                            JOIN services s ON t.service_id = s.id
+                            JOIN offers s ON t.offer_id = s.id
                             JOIN users u ON t.freelancer_id = u.id
                             WHERE t.client_id = ? AND t.status = 'in_progress'
                             ORDER BY t.created_at DESC LIMIT 3";
@@ -293,7 +293,7 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
                         <?php
                         $favorites_query = "SELECT s.*, u.username as freelancer_name
                             FROM favorites f
-                            JOIN services s ON f.service_id = s.id
+                            JOIN offers s ON f.offer_id = s.id
                             JOIN users u ON s.user_id = u.id
                             WHERE f.user_id = ?
                             ORDER BY f.created_at DESC LIMIT 3";

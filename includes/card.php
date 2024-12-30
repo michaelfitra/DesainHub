@@ -1,29 +1,77 @@
-<?php 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/DesainHub/config/config.php';
+<?php
+// include '../includes/header.php';
+
+// Get category ID from URL if provided
+$category_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$current_category = null;
+
+// Fetch current category details if ID provided
+if ($category_id) {
+    $stmt = $conn->prepare("SELECT * FROM categories WHERE id = ?");
+    $stmt->bind_param("i", $category_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $current_category = $result->fetch_assoc();
+}
+
+// Fetch offers based on category
+$query = "SELECT o.*, c.name as category_name, u.full_name as freelancer_name, u.profile_photo,
+          COUNT(DISTINCT t.id) as total_orders,
+          COALESCE(AVG(r.rating), 0) as avg_rating
+          FROM offers o
+          JOIN users u ON o.user_id = u.id
+          JOIN categories c ON o.category_id = c.id
+          LEFT JOIN transactions t ON o.id = t.offer_id
+          LEFT JOIN reviews r ON t.id = r.transaction_id";
+
+if ($category_id) {
+    $query .= " WHERE o.category_id = ?";
+}
+
+$query .= " GROUP BY o.id ORDER BY o.created_at DESC";
+
+$stmt = $conn->prepare($query);
+if ($category_id) {
+    $stmt->bind_param("i", $category_id);
+}
+$stmt->execute();
+$offers = $stmt->get_result();
 ?>
 
-<div class="card border-0">
-    <a href="<?php echo ASSETS_PATH_PAGES; ?>service-detail.php">
-        <img src="<?php echo ASSETS_PATH_IMG; ?>CoverImage.jpg" class="card-img-top card-img-bottom" alt="Service Photo" style="height: 200px; object-fit: cover;">
-    </a>
-    <div class="card-body px-0">
-        <h5 class="card-title fw-bold">Service Title</h5>
-        <p class="card-text text-muted">A short, engaging description of the service offered. Highlights
-            the main features or benefits.</p>
-        <!-- Rating -->
-        <div class="d-flex align-items-center mb-3">
-            <span class="text-warning">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-half"></i>
-            </span>
-            <span class="ms-2 text-muted">(4.5) 120 Reviews</span>
+<?php if ($offers->num_rows > 0): ?>
+    <?php while ($offer = $offers->fetch_assoc()): ?>
+        <div class="card h-100 border-0 shadow">
+            <img src="<?php echo htmlspecialchars($offer['thumbnail']); ?>" class="card-img-top card-img-bottom"
+                alt="<?php echo htmlspecialchars($offer['title']); ?>" style="height: 200px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title"><?php echo htmlspecialchars($offer['title']); ?></h5>
+                <p class="card-text"><?php echo htmlspecialchars(substr($offer['description'], 0, 100)) . '...'; ?></p>
+
+                <!-- Rating -->
+                <div class="mb-2">
+                    <span class="text-warning">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <i class="bi bi-star<?php echo $i <= round($offer['avg_rating']) ? '-fill' : ''; ?>"></i>
+                        <?php endfor; ?>
+                    </span>
+                    <small class="text-muted">(<?php echo $offer['total_orders']; ?> orders)</small>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="user-info">
+                        <img src="<?php echo htmlspecialchars($offer['profile_photo']); ?>" class="rounded-circle" width="30"
+                            height="30">
+                        <small class="ms-2"><?php echo htmlspecialchars($offer['freelancer_name']); ?></small>
+                    </div>
+                    <strong class="text-primary">Rp <?php echo number_format($offer['price'], 0, ',', '.'); ?></strong>
+                </div>
+            </div>
         </div>
-        <div class="d-flex justify-content-between align-items-center">
-            <span class="text-muted fw-bold">Starting at $50</span>
-            <a href="<?php echo ASSETS_PATH_PAGES; ?>service-detail.php" class="btn btn-primary btn-sm">Order Now</a>
+    <?php endwhile; ?>
+<?php else: ?>
+    <div class="col-12">
+        <div class="alert alert-info">
+            No offers found in this category.
         </div>
     </div>
-</div>
+<?php endif; ?>

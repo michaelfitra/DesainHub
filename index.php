@@ -18,7 +18,7 @@
         <div class="text-center col-lg-9">
             <h4 class="ts-md-sm"><strong>Desain</strong>HUB UMRI</h4>
             <h1>Tingkatkan tim profesional Anda dengan bantuan talenta mahasiswa UMRI!</h1>
-            <div class="mt-5 offset-md-2 col-8">
+            <div class="mt-5 offset-2 col-8">
                 <div class="search-container">
                     <input type="text" class="search-input" placeholder="Cari layanan yang Anda butuhkan...">
                     <button class="search-button text-light">
@@ -188,16 +188,6 @@
                     <div class="col-md-6 mb-4">
                         <?php include 'includes/card.php'; ?>
                     </div>
-                    <div class="col-md-6 mb-4">
-                        <?php include 'includes/card.php'; ?>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <?php include 'includes/card.php'; ?>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <?php include 'includes/card.php'; ?>
-                    </div>
-                    <!-- Repeat cards as needed for more users -->
                 </div>
             </div>
 
@@ -209,16 +199,6 @@
                     <div class="col-md-6 mb-4">
                         <?php include 'includes/card.php'; ?>
                     </div>
-                    <div class="col-md-6 mb-4">
-                        <?php include 'includes/card.php'; ?>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <?php include 'includes/card.php'; ?>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <?php include 'includes/card.php'; ?>
-                    </div>
-                    <!-- Repeat cards as needed for more freelancers -->
                 </div>
             </div>
         </div>
