@@ -220,37 +220,6 @@ $gallery_images = $gallery_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
                 <hr>
 
-                <!-- Packages Section -->
-                <h5>Paket Layanan</h5>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="package-card">
-                            <h6>Basic</h6>
-                            <p>Deskripsi singkat untuk paket Basic.</p>
-                            <div class="package-price">$XX</div>
-                            <a href="#" class="btn btn-outline-primary w-100 mt-2">Order Basic</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="package-card">
-                            <h6>Standard</h6>
-                            <p>Deskripsi singkat untuk paket Standard.</p>
-                            <div class="package-price">$YY</div>
-                            <a href="#" class="btn btn-outline-primary w-100 mt-2">Order Standard</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="package-card">
-                            <h6>Premium</h6>
-                            <p>Deskripsi singkat untuk paket Premium.</p>
-                            <div class="package-price">$ZZ</div>
-                            <a href="#" class="btn btn-outline-primary w-100 mt-2">Order Premium</a>
-                        </div>
-                    </div>
-                </div>
-
-                <hr>
-
                 <!-- FAQ Section -->
                 <h5>FAQ</h5>
                 <div class="accordion" id="faqAccordion">

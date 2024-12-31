@@ -125,6 +125,8 @@ $offers = $stmt->get_result();
         </div>
     </div>
 
+    <div class="container" style="height: 45vh"></div>
+
     <?php include '../includes/footer.php'; ?>
     
     <!-- Bootstrap Bundle with Popper -->

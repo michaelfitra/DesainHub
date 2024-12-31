@@ -23,17 +23,21 @@ include 'includes/header.php';
             <h4 class="ts-md-sm"><strong>Desain</strong>HUB UMRI</h4>
             <h1>Tingkatkan tim profesional Anda dengan bantuan talenta mahasiswa UMRI!</h1>
             <div class="mt-5 offset-2 col-8">
+                <!-- Pencarian -->
                 <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Cari layanan yang Anda butuhkan...">
-                    <button class="search-button text-light">
-                        <i class="bi bi-search"></i>
-                    </button>
+                    <form action="pages/search.php" method="get" class="d-flex m-0" style="width: 100vh;">
+                        <input type="text" name="q" class="search-input" placeholder="Cari layanan yang Anda butuhkan...">
+                        <button type="submit" class="search-button text-light">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
                 </div>
+                <!-- Populer Section Kategori -->
                 <div class="text-start mt-4">
                     <span class="text-muted">Populer:</span>
-                    <a href="#" class="btn btn-sm btn-outline-secondary ms-2">Logo Design</a>
-                    <a href="#" class="btn btn-sm btn-outline-secondary ms-2">Web Development</a>
-                    <a href="#" class="btn btn-sm btn-outline-secondary ms-2">Content Writing</a>
+                    <a href="pages/kategori.php?id=1" class="btn btn-sm btn-outline-secondary ms-2 mb-3">Desain Grafis</a>
+                    <a href="pages/kategori.php?id=2" class="btn btn-sm btn-outline-secondary ms-2 mb-3">Pemrograman & Teknologi</a>
+                    <a href="pages/kategori.php?id=3" class="btn btn-sm btn-outline-secondary ms-2 mb-3">Penulisan & Penerjemahan</a>
                 </div>
             </div>
         </div>
@@ -44,7 +48,7 @@ include 'includes/header.php';
         <!-- <h2 class="text-center">Telusuri Kategori Layanan</h2> -->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
             <div class="col">
-                <a href="pages/kategori.php" class="text-decoration-none">
+                <a href="pages/kategori.php?id=1" class="text-decoration-none">
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="bi bi-pencil-square display-4" style="color: #004d00;"></i>
@@ -55,7 +59,7 @@ include 'includes/header.php';
                 </a>
             </div>
             <div class="col">
-                <a href="pages/kategori.php" class="text-decoration-none">
+                <a href="pages/kategori.php?id=2" class="text-decoration-none">
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="bi bi-code-slash display-4" style="color: #004d00;"></i>
@@ -66,7 +70,7 @@ include 'includes/header.php';
                 </a>
             </div>
             <div class="col">
-                <a href="pages/kategori.php" class="text-decoration-none">
+                <a href="pages/kategori.php?id=5" class="text-decoration-none">
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="bi bi-camera display-4" style="color: #004d00;"></i>
@@ -77,7 +81,7 @@ include 'includes/header.php';
                 </a>
             </div>
             <div class="col">
-                <a href="pages/kategori.php" class="text-decoration-none">
+                <a href="pages/kategori.php?id=3" class="text-decoration-none">
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="bi bi-mic display-4" style="color: #004d00;"></i>
