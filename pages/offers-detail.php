@@ -313,7 +313,15 @@ $gallery_images = $gallery_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                         <li>✓ Revisi: <?php echo $offer['revisions']; ?> kali</li>
                         <li>✓ <?php echo $offer['total_orders']; ?> Pesanan Selesai</li>
                     </ul>
-                    <a href="#" class="btn btn-primary w-100">Pesan Sekarang</a>
+                    <a href="<?php 
+                        if (isset($_SESSION['user_id'])) {
+                            echo "order-detail.php?offer_id=" . $offer['id'];
+                        } else { 
+                            echo "masuk.php";
+                        }
+                    ?>" class="btn btn-primary w-100">
+                        <?php echo isset($_SESSION['user_id']) ? "Pesan Sekarang" : "Masuk untuk Memesan"; ?>
+                    </a>
                 </div>
             </div>
         </div>

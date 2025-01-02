@@ -292,12 +292,14 @@ if (!$result || !$result['is_freelancer']) {
                     </div>
                     <div class="card-body">
                         <?php
-                        $orders_query = "SELECT t.*, s.title as service_title, 
+                        // Update query to include correct status filters and join with offers
+                        $orders_query = "SELECT t.*, o.title as service_title, o.price,
                             u.full_name as client_name, u.profile_photo as client_photo
                             FROM transactions t
-                            JOIN offers s ON t.offer_id = s.id
+                            JOIN offers o ON t.offer_id = o.id
                             JOIN users u ON t.client_id = u.id
-                            WHERE t.freelancer_id = ? AND t.status = 'in_progress'
+                            WHERE t.freelancer_id = ? 
+                            AND t.status IN ('pending', 'accepted', 'payment_pending', 'payment_accepted')
                             ORDER BY t.created_at DESC";
 
                         $stmt = $conn->prepare($orders_query);
@@ -314,8 +316,8 @@ if (!$result || !$result['is_freelancer']) {
                                             <th>Client</th>
                                             <th>Service</th>
                                             <th>Price</th>
-                                            <th>Order Date</th>
                                             <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -330,11 +332,23 @@ if (!$result || !$result['is_freelancer']) {
                                                     </div>
                                                 </td>
                                                 <td><?= htmlspecialchars($order['service_title']) ?></td>
-                                                <td>$<?= number_format($order['total_price'], 2) ?></td>
-                                                <td><?= date('M d, Y', strtotime($order['created_at'])) ?></td>
+                                                <td>Rp <?= number_format($order['price'], 0, ',', '.') ?></td>
                                                 <td>
-                                                    <span
-                                                        class="badge bg-primary"><?= ucfirst(str_replace('_', ' ', $order['status'])) ?></span>
+                                                    <span class="badge bg-<?= match($order['status']) {
+                                                        'pending' => 'warning',
+                                                        'accepted' => 'info',
+                                                        'payment_pending' => 'primary',
+                                                        'payment_accepted' => 'success',
+                                                        default => 'secondary'
+                                                    } ?>">
+                                                        <?= ucwords(str_replace('_', ' ', $order['status'])) ?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="payment.php?id=<?= $order['id'] ?>" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        View Details
+                                                    </a>
                                                 </td>
                                             </tr>
                                         <?php endwhile; ?>

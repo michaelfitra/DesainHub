@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 30, 2024 at 01:36 AM
+-- Generation Time: Jan 02, 2025 at 08:06 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -145,11 +145,24 @@ CREATE TABLE `transactions` (
   `offer_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
   `freelancer_id` int(11) NOT NULL,
-  `status` enum('pending','in_progress','completed','cancelled') DEFAULT 'pending',
+  `status` enum('pending','accepted','rejected','payment_pending','payment_accepted','payment_rejected','completed','cancelled') DEFAULT 'pending',
   `total_price` decimal(10,2) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `payment_proof` varchar(255) DEFAULT NULL,
+  `payment_date` timestamp NULL DEFAULT NULL,
+  `result_files` text DEFAULT NULL,
+  `result_date` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `offer_id`, `client_id`, `freelancer_id`, `status`, `total_price`, `created_at`, `updated_at`, `payment_proof`, `payment_date`, `result_files`, `result_date`) VALUES
+(1, 1, 22, 20, 'pending', 1000.00, '2025-01-02 18:04:55', '2025-01-02 18:04:55', NULL, NULL, NULL, NULL),
+(2, 1, 22, 20, 'pending', 1000.00, '2025-01-02 18:09:15', '2025-01-02 18:09:15', NULL, NULL, NULL, NULL),
+(3, 1, 22, 20, 'pending', 1000.00, '2025-01-02 18:59:54', '2025-01-02 18:59:54', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -301,7 +314,7 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`

@@ -198,6 +198,83 @@ include '../includes/header.php'; // session_start() dan config.php sudah ada da
                     </div>
                 </div>
 
+                <!-- Active Orders Section -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">My Orders</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php
+                        // Update query to show orders for clients
+                        $orders_query = "SELECT t.*, o.title as service_title, o.price,
+                            u.full_name as freelancer_name, u.profile_photo as freelancer_photo
+                            FROM transactions t
+                            JOIN offers o ON t.offer_id = o.id
+                            JOIN users u ON t.freelancer_id = u.id
+                            WHERE t.client_id = ? 
+                            AND t.status != 'completed' AND t.status != 'cancelled'
+                            ORDER BY t.created_at DESC";
+
+                        $stmt = $conn->prepare($orders_query);
+                        $stmt->bind_param("i", $_SESSION['user_id']);
+                        $stmt->execute();
+                        $active_orders = $stmt->get_result();
+                        ?>
+
+                        <?php if ($active_orders->num_rows > 0): ?>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Service</th>
+                                            <th>Freelancer</th>
+                                            <th>Price</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($order = $active_orders->fetch_assoc()): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($order['service_title']) ?></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="<?= htmlspecialchars($order['freelancer_photo']) ?>"
+                                                            class="rounded-circle me-2"
+                                                            style="width: 32px; height: 32px; object-fit: cover;">
+                                                        <div><?= htmlspecialchars($order['freelancer_name']) ?></div>
+                                                    </div>
+                                                </td>
+                                                <td>Rp <?= number_format($order['price'], 0, ',', '.') ?></td>
+                                                <td>
+                                                    <span class="badge bg-<?= match($order['status']) {
+                                                        'pending' => 'warning',
+                                                        'accepted' => 'info',
+                                                        'payment_pending' => 'primary',
+                                                        'payment_accepted' => 'success',
+                                                        'payment_rejected' => 'danger',
+                                                        default => 'secondary'
+                                                    } ?>">
+                                                        <?= ucwords(str_replace('_', ' ', $order['status'])) ?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="payment.php?id=<?= $order['id'] ?>" 
+                                                    class="btn btn-sm btn-outline-primary">
+                                                        Manage Order
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php else: ?>
+                            <p class="text-muted m-0">You don't have any active orders.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <!-- Active Orders -->
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header">
