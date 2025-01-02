@@ -104,16 +104,14 @@ $orders = $stmt->get_result();
                     <div class="col-md-4">
                         <label class="form-label">Status</label>
                         <select name="status" class="form-select" onchange="this.form.submit()">
-                            <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>>All Orders
-                            </option>
-                            <option value="pending" <?php echo $status_filter === 'pending' ? 'selected' : ''; ?>>Pending
-                            </option>
-                            <option value="in_progress" <?php echo $status_filter === 'in_progress' ? 'selected' : ''; ?>>
-                                In Progress</option>
-                            <option value="completed" <?php echo $status_filter === 'completed' ? 'selected' : ''; ?>>
-                                Completed</option>
-                            <option value="cancelled" <?php echo $status_filter === 'cancelled' ? 'selected' : ''; ?>>
-                                Cancelled</option>
+                            <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>>Semua Pesanan</option>
+                            <option value="pending" <?php echo $status_filter === 'pending' ? 'selected' : ''; ?>>Menunggu Konfirmasi</option>
+                            <option value="accepted" <?php echo $status_filter === 'accepted' ? 'selected' : ''; ?>>Diterima</option>
+                            <option value="payment_pending" <?php echo $status_filter === 'payment_pending' ? 'selected' : ''; ?>>Menunggu Verifikasi Pembayaran</option>
+                            <option value="payment_accepted" <?php echo $status_filter === 'payment_accepted' ? 'selected' : ''; ?>>Pembayaran Diterima</option>
+                            <option value="completed" <?php echo $status_filter === 'completed' ? 'selected' : ''; ?>>Selesai</option>
+                            <option value="rejected" <?php echo $status_filter === 'rejected' ? 'selected' : ''; ?>>Ditolak</option>
+                            <option value="cancelled" <?php echo $status_filter === 'cancelled' ? 'selected' : ''; ?>>Dibatalkan</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -154,13 +152,25 @@ $orders = $stmt->get_result();
                                             <span class="badge bg-<?php
                                             echo match ($order['status']) {
                                                 'pending' => 'warning',
-                                                'in_progress' => 'primary',
+                                                'accepted' => 'info',
+                                                'payment_pending' => 'primary',
+                                                'payment_accepted' => 'success',
+                                                'payment_rejected' => 'danger',
                                                 'completed' => 'success',
-                                                'cancelled' => 'danger',
-                                                default => 'secondary'
+                                                'rejected' => 'danger',
+                                                'cancelled' => 'secondary'
                                             };
                                             ?>">
-                                                <?php echo ucfirst(str_replace('_', ' ', $order['status'])); ?>
+                                                <?php echo match($order['status']) {
+                                                    'pending' => 'Menunggu Konfirmasi',
+                                                    'accepted' => 'Diterima - Menunggu Pembayaran',
+                                                    'payment_pending' => 'Menunggu Verifikasi Pembayaran',
+                                                    'payment_accepted' => 'Pembayaran Diterima',
+                                                    'payment_rejected' => 'Pembayaran Ditolak',
+                                                    'completed' => 'Selesai',
+                                                    'rejected' => 'Ditolak',
+                                                    'cancelled' => 'Dibatalkan'
+                                                }; ?>
                                             </span>
                                         </p>
                                     </div>
@@ -200,15 +210,22 @@ $orders = $stmt->get_result();
                         <!-- Action Buttons -->
                         <div class="border-top mt-3 pt-3">
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="order-details.php?id=<?php echo $order['id']; ?>"
-                                    class="btn btn-outline-primary btn-sm">
-                                    View Details
-                                </a>
-                                <?php if ($order['status'] === 'completed' && $order['rating'] === 0): ?>
-                                    <button class="btn btn-primary btn-sm"
-                                        onclick="location.href='leave-review.php?id=<?php echo $order['id']; ?>'">
-                                        Leave Review
-                                    </button>
+                                <?php if ($order['status'] === 'pending'): ?>
+                                    <a href="payment.php?id=<?= $order['id'] ?>" class="btn btn-outline-primary btn-sm">
+                                        Lihat Detail
+                                    </a>
+                                <?php elseif ($order['status'] === 'accepted'): ?>
+                                    <a href="payment-upload.php?id=<?= $order['id'] ?>" class="btn btn-primary btn-sm">
+                                        Upload Pembayaran
+                                    </a>
+                                <?php elseif ($order['status'] === 'payment_pending'): ?>
+                                    <a href="payment-verification.php?id=<?= $order['id'] ?>" class="btn btn-primary btn-sm">
+                                        Verifikasi Pembayaran
+                                    </a>
+                                <?php elseif ($order['status'] === 'payment_accepted' || $order['status'] === 'completed'): ?>
+                                    <a href="payment.php?id=<?= $order['id'] ?>" class="btn btn-outline-primary btn-sm">
+                                        Lihat Detail
+                                    </a>
                                 <?php endif; ?>
                             </div>
                         </div>
